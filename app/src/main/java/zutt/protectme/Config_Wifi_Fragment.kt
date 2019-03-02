@@ -29,6 +29,7 @@ class Config_Wifi_Fragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
+        // Get the SSID of the connected wifi
         val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val wifiInfo = wifiManager.connectionInfo
         ssid = wifiInfo.ssid
@@ -38,13 +39,16 @@ class Config_Wifi_Fragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         ssid_config_wifi.text = ssid
 
+        // When user has finish to edit the second password EditText
         password_wifi2.setOnEditorActionListener() { v, actionId, event ->
             if(actionId == EditorInfo.IME_ACTION_DONE){
 
+                //we verify that password are the same
                 val firstPassword = password_wifi1.text
                 val secondPassword = password_wifi2.text
 
                 if(!firstPassword.toString().equals(secondPassword.toString())) {
+                    //error message
                     password_ok_config_wifi.visibility = View.VISIBLE
                     password_wifi1.text.clear()
                     password_wifi2.text.clear()
@@ -52,11 +56,13 @@ class Config_Wifi_Fragment : Fragment() {
                 else{
                     password_ok_config_wifi.visibility = View.INVISIBLE
 
+                    //modify button to continue configuration
                     val color = ContextCompat.getColor(this.context!!,R.color.myBlueDark)
                     button_config_Wifi.setText(R.string.next_config)
                     button_config_Wifi.setBackgroundColor(color)
                     button_config_Wifi.isClickable = true
 
+                    //On click, go to the next fragment configuration
                     button_config_Wifi.setOnClickListener { view ->
                         val nextFrag = Config_Wifi_Fragment()
                         activity!!.supportFragmentManager.beginTransaction()

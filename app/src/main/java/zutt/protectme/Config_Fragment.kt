@@ -26,17 +26,15 @@ class Config_Fragment : Fragment() {
     }
 
 
+    //create personalised Toast
     fun Toast.createToast(context: Context, message: String, gravity: Int, duration: Int) {
         val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        /*first parameter is the layout you made
-        second parameter is the root view in that xml
-         */
         val layout = inflater.inflate(R.layout.custom_toast, (context as Activity).findViewById(R.id.custom_toast_container))
+
 
         layout.findViewById<TextView>(R.id.textToast).text = message
         setGravity(gravity, 0, 10)
         setDuration(Toast.LENGTH_LONG)
-
         view = layout
         show()
     }
@@ -50,11 +48,13 @@ class Config_Fragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
+        // verify that wifi is enable, if not active it
         val wifiManager: WifiManager = this.context?.getSystemService(Context.WIFI_SERVICE) as WifiManager
         if(!wifiManager.isWifiEnabled){
             wifiManager.isWifiEnabled = true
         }
 
+        // verify that Bluetooth is enable, if not, ask to active it
         if (mBluetoothAdapter == null) {
             val toast: Toast = Toast(context)
             toast.createToast(context, getString(R.string.no_Bluetooth_config), Gravity.BOTTOM, 10)
@@ -72,6 +72,7 @@ class Config_Fragment : Fragment() {
         if (requestCode == this.REQUEST_ENABLE_BT) {
             // Make sure the request was successful
             if (resultCode == Activity.RESULT_OK) {
+                // After bluetooth is activated start configuration
                 startConfig()
             }
         }
@@ -79,17 +80,20 @@ class Config_Fragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        // if bluetooth is already enable, start configuration
         if(mBluetoothAdapter!=null && mBluetoothAdapter.isEnabled){
             startConfig()
         }
     }
 
     fun startConfig(){
+        //modify button to continue configuration
         val color = ContextCompat.getColor(this.context!!,R.color.myBlueDark)
         button_config.setText(R.string.begin_config)
         button_config.setBackgroundColor(color)
         button_config.isClickable = true
 
+        //On click, go to the next fragment configuration
         button_config.setOnClickListener { view ->
             val nextFrag = Config_Wifi_Fragment()
             activity!!.supportFragmentManager.beginTransaction()

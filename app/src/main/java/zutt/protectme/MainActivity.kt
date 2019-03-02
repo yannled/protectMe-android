@@ -27,8 +27,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setSupportActionBar(toolbar)
 
+        // Information button, Create a PopupWindow
+        // Source : https://android--code.blogspot.com/2018/02/android-kotlin-popup-window-example.html
         fab.setOnClickListener { view ->
-            // Source : https://android--code.blogspot.com/2018/02/android-kotlin-popup-window-example.html
             // Initialize a new layout inflater instance
             val inflater: LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
 
-            popupWindow.isOutsideTouchable = true;
+            popupWindow.isOutsideTouchable = true
 
             // Get the widgets reference from custom view
             val buttonPopup = view.findViewById<Button>(R.id.button_popup)
@@ -92,6 +93,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         nav_view.setNavigationItemSelectedListener(this)
 
+        //define default fragment
         val VPNfragment = VPN_Fragment()
         fragmentTransaction.add(R.id.fragment_container, VPNfragment)
         fragmentTransaction.commit()
@@ -134,6 +136,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    //Method to load the choose fragment
     protected fun openFragment(fragment: Fragment) {
         supportFragmentManager
                 .beginTransaction()
