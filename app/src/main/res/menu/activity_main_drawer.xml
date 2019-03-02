@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_vpn"
+            android:icon="@drawable/stat_sys_tether_wifi"
+            android:title="@string/navigation_VPN" />
+        <item
+            android:id="@+id/nav_configuration"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/navigation_Configuration" />
+        <item
+            android:id="@+id/nav_list"
+            android:icon="@drawable/ic_format_list_bulleted_black_24dp"
+            android:title="@string/navigation_List" />
+        <item
+            android:id="@+id/nav_update"
+            android:icon="@drawable/ic_update_black_24dp"
+            android:title="@string/navigation_Update" />
+    </group>
+</menu>

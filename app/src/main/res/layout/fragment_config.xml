@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_container_config"
+    tools:context=".Config_Fragment">
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textColor="#000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/hello_Config"
+        android:gravity="center_horizontal"
+        android:textSize="25sp" />
+
+    <TextView
+        android:textColor="#000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:text="@string/active_Bluetooth_config"
+        android:gravity="center_horizontal"
+        android:textSize="18sp" />
+
+    <TextView
+        android:textColor="#000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
+        android:text="@string/connect_Bluetooth_config"
+        android:gravity="center_horizontal"
+        android:textSize="18sp" />
+
+    <Button
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:background="@color/myBlueDark"
+        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="80dp"
+        android:text="@string/start_config"/>
+
+</FrameLayout>

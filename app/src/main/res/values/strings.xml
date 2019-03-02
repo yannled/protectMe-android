@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">ProtectMe!</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">ProtectMe!</string>
+    <string name="nav_header_subtitle">VPN for everyone</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="navigation_VPN">VPN</string>
+    <string name="navigation_Configuration">Configuration</string>
+    <string name="navigation_Update">Update</string>
+    <string name="navigation_List">List</string>
+
+    <!-- Main view -->
+    <string name="hello_VPN">Click on connect to be secure !</string>
+    <string name="hello_blank_fragment_config">Hello blank fragment for config</string>
+    <string name="connect">CONNECT !</string>
+
+    <!-- view_information -->
+    <string name="title_information">How to use ProtectMe!</string>
+    <string name="list_information"><b><big></big></b>
+        \n <li>start your ProtectMe! Box</li>
+        \n <li>connect to your ProtectMe! By Bluetooth</li>
+        \n <li>go to configure tab</li>
+        \n <li>begin to use your secured connection</li>
+        \n <li>don\'t forget to update your box by the update tab</li>
+    </string>
+    <string name="close_button_information">Close Me!</string>
+
+    <!-- Configuration view -->
+    <string name="hello_Config">Configuration</string>
+    <string name="active_Bluetooth_config">First, active Bluetooth on your phone</string>
+    <string name="connect_Bluetooth_config">Then, connect your phone to your ProtectMe! box</string>
+    <string name="start_config">Start configuration</string>
+    <string name="no_Bluetooth_config">You can\'t active Bluetooth</string>
+</resources>
