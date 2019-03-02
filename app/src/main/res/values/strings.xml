@@ -29,8 +29,19 @@
 
     <!-- Configuration view -->
     <string name="hello_Config">Configuration</string>
-    <string name="active_Bluetooth_config">First, active Bluetooth on your phone</string>
-    <string name="connect_Bluetooth_config">Then, connect your phone to your ProtectMe! box</string>
+    <string name="active_box_config">First, start the ProtectMe! box</string>s
+    <string name="connect_Bluetooth_config">Then, be sure to have Bluetooth and wifi active</string>
     <string name="start_config">Start configuration</string>
+    <string name="begin_config">Begin configuration</string>
+    <string name="next_config">Next step</string>
+    <string name="wait_config">Complete before</string>
     <string name="no_Bluetooth_config">You can\'t active Bluetooth</string>
+
+    <!-- Configuration_wifi view -->
+    <string name="hello_Config_wifi">1. Wifi</string>
+    <string name="label_ssid_Config_wifi">your wifi : </string>
+    <string name="ssid_Config_wifi">waiting information</string>
+    <string name="password_Config_wifi">type the wifi password</string>
+    <string name="second_password_Config_wifi">type password a second time</string>
+    <string name="error_password_Config_wifi">Passwords are different</string>
 </resources>

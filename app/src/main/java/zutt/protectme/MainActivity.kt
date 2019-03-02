@@ -1,8 +1,7 @@
 package zutt.protectme
 
+
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -49,7 +48,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 popupWindow.elevation = 10.0F
             }
 
-
             // If API level 23 or higher then execute the code
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                 // Create a new slide animation for popup window enter transition
@@ -63,6 +61,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 popupWindow.exitTransition = slideOut
 
             }
+
+            popupWindow.isOutsideTouchable = true;
 
             // Get the widgets reference from custom view
             val buttonPopup = view.findViewById<Button>(R.id.button_popup)
@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun openFragment(fragment: Fragment) {
+    protected fun openFragment(fragment: Fragment) {
         supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)

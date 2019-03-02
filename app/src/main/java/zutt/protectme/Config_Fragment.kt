@@ -3,45 +3,26 @@ package zutt.protectme
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import android.content.Intent
-import android.graphics.Color
+import android.net.wifi.WifiManager
+import android.support.v4.content.ContextCompat
 import android.view.Gravity
-import android.widget.TextView
+import android.widget.*
+import kotlinx.android.synthetic.main.fragment_config.*
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [VPN_Fragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [VPN_Fragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
 class Config_Fragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    //private var param2: String? = null
-    //private var listener: OnFragmentInteractionListener? = null
+    private val REQUEST_ENABLE_BT = 1
+    private var enableBtIntent = Intent()
+    private var mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            //param1 = it.getString(ARG_PARAM1)
-            //param2 = it.getString(ARG_PARAM2)
-        }
     }
 
 
@@ -54,9 +35,9 @@ class Config_Fragment : Fragment() {
 
         layout.findViewById<TextView>(R.id.textToast).text = message
         setGravity(gravity, 0, 10)
-        setDuration(Toast.LENGTH_LONG);
+        setDuration(Toast.LENGTH_LONG)
 
-        setView(layout);
+        view = layout
         show()
     }
 
@@ -66,73 +47,55 @@ class Config_Fragment : Fragment() {
         return inflater.inflate(R.layout.fragment_config, container, false)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        //listener?.onFragmentInteraction(uri)
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        val mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val wifiManager: WifiManager = this.context?.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        if(!wifiManager.isWifiEnabled){
+            wifiManager.isWifiEnabled = true
+        }
+
         if (mBluetoothAdapter == null) {
-            //Toast.makeText(this.context,R.string.no_Bluetooth_config, Toast.LENGTH_SHORT).show()
             val toast: Toast = Toast(context)
             toast.createToast(context, getString(R.string.no_Bluetooth_config), Gravity.BOTTOM, 10)
         }
         else {
             if(!mBluetoothAdapter.isEnabled) {
-                val REQUEST_ENABLE_BT = 0
-                val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+                this.enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                startActivityForResult(this.enableBtIntent, this.REQUEST_ENABLE_BT)
             }
         }
-        /*if (context is OnFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
-        }*/
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        //listener = null
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == this.REQUEST_ENABLE_BT) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                startConfig()
+            }
+        }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments]
-     * (http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if(mBluetoothAdapter!=null && mBluetoothAdapter.isEnabled){
+            startConfig()
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment VPN_Fragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-                VPN_Fragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
-                }
-    }
+    fun startConfig(){
+        val color = ContextCompat.getColor(this.context!!,R.color.myBlueDark)
+        button_config.setText(R.string.begin_config)
+        button_config.setBackgroundColor(color)
+        button_config.isClickable = true
 
+        button_config.setOnClickListener { view ->
+            val nextFrag = Config_Wifi_Fragment()
+            activity!!.supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, nextFrag)
+                    .addToBackStack(null)
+                    .commit()
+        }
+    }
 }

@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="myBlue">#1243ab</color>
     <color name="myBlueDark">#1229aa</color>
+    <color name="red">#aa1212</color>
+    <color name="green">#1eda0a</color>
+    <color name="disable">#fe717171</color>
 </resources>
