@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_container_config"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Config_Fragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="87dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:text="@string/hello_Config_wifi"
+            android:textColor="#000"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/devices_bluetooth"
+            android:layout_width="283dp"
+            android:layout_height="131dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="21dp"
+            android:layout_marginTop="77dp"
+            android:gravity="center_horizontal"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="21dp" />
+
+        <Button
+            android:id="@+id/button_config_Wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@color/disable"
+            android:clickable="false"
+            android:padding="20dp"
+            android:text="@string/wait_config"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:layout_alignParentLeft="true" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="246dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignStart="@+id/devices_bluetooth"
+            android:layout_marginBottom="153dp"
+            android:layout_alignLeft="@+id/devices_bluetooth" />
+    </RelativeLayout>
+</FrameLayout>

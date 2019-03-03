@@ -1,11 +1,13 @@
 package zutt.protectme
 
 
+import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.transition.TransitionManager
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -20,7 +22,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val fragmentManager = supportFragmentManager
     private val fragmentTransaction = fragmentManager.beginTransaction()
-
+    private val REQUEST_LOCATION_PERMISSION = 101
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

@@ -1,5 +1,7 @@
 package zutt.protectme
 
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,16 +11,23 @@ import android.view.ViewGroup
 import android.net.wifi.WifiManager
 import android.support.v4.content.ContextCompat
 import android.view.inputmethod.EditorInfo
-import kotlinx.android.synthetic.main.fragment_config.*
 import kotlinx.android.synthetic.main.fragment_wifi_config.*
-import zutt.protectme.R.id.textView
 
-
+/**
+ * Class Model to share configurations informations for the next configurations fragments
+ */
+class SharedViewModel : ViewModel(){
+    var wifiSsid : String? = null
+    var wifiPassword : String? = null
+    var bluetoothName : String? = null
+    var bluetoothMac : String? = null
+}
 
 
 class Config_Wifi_Fragment : Fragment() {
 
     var ssid : String? = null
+    private lateinit var ConfigurationModel: SharedViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -37,6 +46,12 @@ class Config_Wifi_Fragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // Load the shared Model
+        ConfigurationModel = activity?.run {
+            ViewModelProviders.of(this).get(SharedViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
         ssid_config_wifi.text = ssid
 
         // When user has finish to edit the second password EditText
@@ -54,6 +69,9 @@ class Config_Wifi_Fragment : Fragment() {
                     password_wifi2.text.clear()
                 }
                 else{
+                    ConfigurationModel.wifiSsid = ssid
+                    ConfigurationModel.wifiPassword = secondPassword.toString()
+
                     password_ok_config_wifi.visibility = View.INVISIBLE
 
                     //modify button to continue configuration
@@ -64,7 +82,7 @@ class Config_Wifi_Fragment : Fragment() {
 
                     //On click, go to the next fragment configuration
                     button_config_Wifi.setOnClickListener { view ->
-                        val nextFrag = Config_Wifi_Fragment()
+                        val nextFrag = Config_Bluetooth_Fragment()
                         activity!!.supportFragmentManager.beginTransaction()
                                 .replace(R.id.fragment_container, nextFrag)
                                 .addToBackStack(null)
