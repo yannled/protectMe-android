@@ -44,4 +44,8 @@
     <string name="password_Config_wifi">type the wifi password</string>
     <string name="second_password_Config_wifi">type password a second time</string>
     <string name="error_password_Config_wifi">Passwords are different</string>
+
+    <!-- Configuration_Bluetooth view -->
+    <string name="hello_Bluetooth">2. Bluetooth</string>
+    <string name="select_Bluetooth">Wait, then select you ProtectMe! Box</string>
 </resources>

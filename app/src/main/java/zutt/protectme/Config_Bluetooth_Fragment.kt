@@ -1,7 +1,8 @@
 package zutt.protectme
 
+import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProviders
-import android.bluetooth.BluetoothManager
+import android.bluetooth.*
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
@@ -14,10 +15,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.fragment_bluetooth_config.*
+import android.content.IntentFilter
+import android.content.Intent
+import android.content.BroadcastReceiver
+import android.content.ContentValues.TAG
+import android.graphics.drawable.Drawable
+import android.os.AsyncTask
+import android.widget.AdapterView
+import android.widget.ListView
+import kotlinx.android.synthetic.main.fragment_wifi_config.*
+import java.io.IOException
+import java.util.*
+
 
 class Config_Bluetooth_Fragment : Fragment() {
 
-    private lateinit var configurationModel: SharedViewModel
+    companion object {
+        lateinit var configurationModel: SharedViewModel
+        var mBluetoothAdapter: BluetoothAdapter? = null
+        val DeviceList = arrayListOf<BluetoothDevice>() //list to get informations from selected bluetooth host
+        val mDeviceList = arrayListOf<String>() //list to show name in ListView
+        var m_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+        var m_bluetoothSocket: BluetoothSocket? = null
+        lateinit var m_progress: ProgressDialog
+        var m_isConnected: Boolean = false
+        var m_device: BluetoothDevice? = null
+        lateinit var m_address: String
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -28,7 +52,7 @@ class Config_Bluetooth_Fragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val permissions = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
-        requestPermissions(permissions,0)
+        requestPermissions(permissions, 0)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -37,49 +61,125 @@ class Config_Bluetooth_Fragment : Fragment() {
         configurationModel = activity?.run {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        mBluetoothAdapter!!.startDiscovery()
+
+        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        activity!!.registerReceiver(mReceiver, filter)
+
+        listBlueTooth.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            // This is your listview's selected item
+            val item = parent.getItemAtPosition(position)
+
+            for (device in DeviceList){
+                if(device.name == item.toString()){
+                    configurationModel.bluetoothName = device.name
+                    configurationModel.bluetoothMac = device.address
+
+                    button_config_Bluetooth.setText(R.string.start_config)
+                    button_config_Bluetooth.setBackgroundResource(R.color.myBlueDark)
+                    button_config_Bluetooth.isClickable = true
+
+                    //On click, go to the next fragment configuration
+                    button_config_Bluetooth.setOnClickListener { view ->
+                        ConnectToDevice(this.parentFragment!!.context!!).execute()
+                        sendCommand("hello")
+
+                    }
+                }
+            }
+        }
     }
 
-    private val bleScanner = object :ScanCallback() {
-        override fun onScanResult(callbackType: Int, result: ScanResult?) {
-            super.onScanResult(callbackType, result)
-            devices_bluetooth.text = "onScanResult: ${result?.device?.address} - ${result?.device?.name}"
-            Log.d("DeviceListActivity","onScanResult: ${result?.device?.address} - ${result?.device?.name}")
-        }
-
-        override fun onBatchScanResults(results: MutableList<ScanResult>?) {
-            super.onBatchScanResults(results)
-            devices_bluetooth.text = results.toString()
-            Log.d("DeviceListActivity","onBatchScanResults:${results.toString()}")
-        }
-
-        override fun onScanFailed(errorCode: Int) {
-            super.onScanFailed(errorCode)
-            devices_bluetooth.text = "onScanFailed: $errorCode"
-            Log.d("DeviceListActivity", "onScanFailed: $errorCode")
-        }
-
+    override fun onDestroy() {
+        activity!!.unregisterReceiver(mReceiver)
+        super.onDestroy()
     }
 
-    private val bluetoothLeScanner: BluetoothLeScanner
-        get() {
-            val bluetoothManager = context?.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-            val bluetoothAdapter = bluetoothManager.adapter
-            return bluetoothAdapter.bluetoothLeScanner
+    private val mReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (BluetoothDevice.ACTION_FOUND == action) {
+                val device = intent
+                        .getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+
+                if (!device.name.isNullOrEmpty()) {
+                    if(!mDeviceList.contains(device.name)) {
+                        DeviceList.add(device)
+                        mDeviceList.add(device.name)
+                    }
+                }
+
+                listBlueTooth.adapter = ArrayAdapter<String>(context,
+                        android.R.layout.simple_list_item_1, mDeviceList)
+            }
+        }
+    }
+
+    private fun sendCommand(input: String){
+        if(m_bluetoothSocket != null){
+            try {
+                m_bluetoothSocket!!.outputStream.write(input.toByteArray())
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun disconnect(){
+        if (m_bluetoothSocket != null){
+            try {
+                m_bluetoothSocket!!.close()
+                m_bluetoothSocket = null
+                m_isConnected = false
+            } catch (e: IOException){
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
+        private var connectSuccess: Boolean = true
+        private var context: Context
+
+        init {
+            this.context = c
         }
 
-    class ListDevicesAdapter(context: Context?, resource: Int) : ArrayAdapter<String>(context, resource)
+        override fun onPreExecute() {
+            super.onPreExecute()
+            m_progress = ProgressDialog.show(context, "Connecting...", "please wait")
+        }
 
-    override fun onStart() {
-        devices_bluetooth.text = "onStart()"
-                Log.d("DeviceListActivity","onStart()")
-        super.onStart()
+        override fun doInBackground(vararg params: Void?): String? {
+             try {
+                 if (m_bluetoothSocket == null || !m_isConnected){
+                    val device : BluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(configurationModel.bluetoothMac)
+                     m_bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(m_UUID)
+                     mBluetoothAdapter!!.cancelDiscovery()
+                     m_bluetoothSocket!!.connect()
+                 }
 
-        bluetoothLeScanner.startScan(bleScanner)
+             } catch (e: IOException) {
+                 connectSuccess = false
+                 e.printStackTrace()
+             }
 
+            return null
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+            if(!connectSuccess){
+                Log.i("data", "couldn't connect")
+            }
+            else{
+                m_isConnected = true
+            }
+
+            m_progress.dismiss()
+        }
     }
 
-    override fun onStop() {
-        bluetoothLeScanner.stopScan(bleScanner)
-        super.onStop()
-    }
 }

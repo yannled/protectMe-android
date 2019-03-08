@@ -2,6 +2,8 @@ package zutt.protectme
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
+import android.bluetooth.BluetoothClass
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -26,7 +28,7 @@ class SharedViewModel : ViewModel(){
 
 class Config_Wifi_Fragment : Fragment() {
 
-    var ssid : String? = null
+    private var ssid : String? = null
     private lateinit var ConfigurationModel: SharedViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
