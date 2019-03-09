@@ -3,9 +3,6 @@ package zutt.protectme
 import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProviders
 import android.bluetooth.*
-import android.bluetooth.le.BluetoothLeScanner
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -18,12 +15,8 @@ import kotlinx.android.synthetic.main.fragment_bluetooth_config.*
 import android.content.IntentFilter
 import android.content.Intent
 import android.content.BroadcastReceiver
-import android.content.ContentValues.TAG
-import android.graphics.drawable.Drawable
 import android.os.AsyncTask
 import android.widget.AdapterView
-import android.widget.ListView
-import kotlinx.android.synthetic.main.fragment_wifi_config.*
 import java.io.IOException
 import java.util.*
 
