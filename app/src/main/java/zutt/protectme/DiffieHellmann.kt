@@ -1,9 +1,9 @@
 package zutt.protectme
 
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.PrivateKey
-import java.security.PublicKey
+import android.os.Build
+import java.security.*
+import java.security.spec.X509EncodedKeySpec
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyAgreement
 import javax.crypto.spec.SecretKeySpec
@@ -52,12 +52,23 @@ class DiffieHellmann(){
         publicKey  = keyPair.public
     }
 
-    fun getPublicKey(): PublicKey{
-        return publicKey
+    fun getPublicKey(): String?{
+        var key : String?  = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            key = Base64.getEncoder().encodeToString(publicKey.encoded)
+        }
+        return key
     }
 
-    fun setReceivePublicKey(receivedPublicKey: PublicKey){
-        publicKey = receivedPublicKey
+    fun setReceivePublicKey(receivedPublicKey: String?){
+        if(receivedPublicKey != null) {
+            var key: ByteArray? = null
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                key = Base64.getDecoder().decode(receivedPublicKey)
+            }
+            val kf = KeyFactory.getInstance(cryptoAlgorithm)
+            publicKey = kf.generatePublic(X509EncodedKeySpec(key))
+        }
     }
 
     fun decryptMessage(message : ByteArray) : String {

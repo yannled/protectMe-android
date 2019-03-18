@@ -21,6 +21,7 @@ import android.widget.AdapterView
 import java.io.IOException
 import java.security.KeyPair
 import java.security.KeyPairGenerator
+import java.security.PublicKey
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
@@ -73,64 +74,44 @@ class Config_Bluetooth_Fragment : Fragment() {
         super.onDestroy()
     }
 
-    fun connectToPBOX(){
-        button_config_Bluetooth.setText(R.string.start_config)
-        button_config_Bluetooth.setBackgroundResource(R.color.myBlueDark)
-        button_config_Bluetooth.isClickable = true
-
+    // create the communication canal with the Protect Me Box
+    fun communicate(){
         ConnectToDevice(this.context!!).execute()
+
+        // Start communication when click on button
         button_config_Bluetooth.setOnClickListener { view ->
-            sendCommand("hello")
-            var message = receiveCommand()
+
+            // Start crypted communication
+            var dh  = DiffieHellmann()
+
+            // Generation of private and public keys
+            dh.generateKeys()
+
+            // TODO : Store the keys in properties file the change getPublicKey to store PublicKey
+            // TODO : retrive the publickey to send it
+            // We send our publicKey
+            sendCommand(dh.getPublicKey())
+
+            //TODO :  recevoir public key
+            var receivedPublicKey = receiveCommand()
+            dh.setReceivePublicKey(receivedPublicKey)
+
+            dh.generateCommonSecretKey()
+
+            //Send our message
+            dh.encryptMessage("Hello")
+
+            // retrive the response
+            var response = receiveCommand()
+            if(response != null) {
+                response = dh.decryptMessage(response.toByteArray())
+            }
+
             disconnect()
         }
     }
 
-    private val mReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            if (BluetoothDevice.ACTION_FOUND == action) {
-                val device = intent
-                        .getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
-
-                if (!device.name.isNullOrEmpty() && device.name == PBOXNAME) {
-                    configurationModel.bluetoothName = device.name
-                    configurationModel.bluetoothMac = device.address
-                    progressBar.visibility = View.INVISIBLE
-                    connectToPBOX()
-                }
-            }
-        }
-    }
-
-    private fun sendCommand(input: String){
-        if(m_bluetoothSocket != null){
-            try {
-                m_bluetoothSocket!!.outputStream.write(input.toByteArray())
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun receiveCommand() : String?{
-        if(m_bluetoothSocket != null){
-
-                val buffer = ByteArray(256)
-                var msg = ""
-                while(true) {
-                    try {
-                        val length = m_bluetoothSocket!!.inputStream.read()
-                        msg += String(buffer, 0, length)
-                    } catch (e: IOException) {
-                        break;
-                    }
-                }
-                return msg
-        }
-                return null
-    }
-
+    // disconnect bluetooth Socket
     private fun disconnect(){
         if (m_bluetoothSocket != null){
             try {
@@ -143,6 +124,64 @@ class Config_Bluetooth_Fragment : Fragment() {
         }
     }
 
+    private fun sendCommand(input: String?){
+        if(m_bluetoothSocket != null && input != null){
+            try {
+                m_bluetoothSocket!!.outputStream.write(input.toByteArray())
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun receiveCommand() : String?{
+        if(m_bluetoothSocket != null){
+
+            val buffer = ByteArray(256)
+            var msg = ""
+            while(true) {
+                try {
+                    val length = m_bluetoothSocket!!.inputStream.read()
+                    msg += String(buffer, 0, length)
+                } catch (e: IOException) {
+                    break;
+                }
+            }
+            return msg
+        }
+        return null
+    }
+
+    // Handling the bluetooth discovery informations
+    private val mReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (BluetoothDevice.ACTION_FOUND == action) {
+                val device = intent
+                        .getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+
+                // if one bluetooth device find is our ProtectMe Box
+                if (!device.name.isNullOrEmpty() && device.name == PBOXNAME) {
+                    // We add device information on our shared model
+                    configurationModel.bluetoothName = device.name
+                    configurationModel.bluetoothMac = device.address
+
+                    // hide the cicrcle waiting progress bar
+                    progressBar.visibility = View.INVISIBLE
+
+                    // update the button interface to begin communication
+                    button_config_Bluetooth.setText(R.string.start_config)
+                    button_config_Bluetooth.setBackgroundResource(R.color.myBlueDark)
+                    button_config_Bluetooth.isClickable = true
+
+                    // Start connection then communication with the ProtectMe Box
+                    communicate()
+                }
+            }
+        }
+    }
+
+    // create the communication canal between the pair Bluetooth devices
     private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
         private var connectSuccess: Boolean = true
         private var context: Context
@@ -150,12 +189,6 @@ class Config_Bluetooth_Fragment : Fragment() {
         init {
             this.context = c
         }
-
-        /*
-        override fun onPreExecute() {
-            super.onPreExecute()
-            m_progress = ProgressDialog.show(context, "Connecting...", "please wait")
-        }*/
 
         override fun doInBackground(vararg params: Void?): String? {
              try {
@@ -165,19 +198,6 @@ class Config_Bluetooth_Fragment : Fragment() {
                      m_bluetoothSocket = device.createRfcommSocketToServiceRecord(m_UUID)
                      mBluetoothAdapter!!.cancelDiscovery()
                      m_bluetoothSocket!!.connect()
-
-                     var dh : DiffieHellmann = DiffieHellmann()
-                     dh.generateKeys()
-                     //TODO :  recevoir public key
-                     //dh.setReceivePublicKey(publicKey)
-                     dh.generateCommonSecretKey()
-                     dh.encryptMessage("Hello")
-
-                     //TODO envoyer
-
-                     //TODO recevoir
-
-                     //dh.decryptMessage()
                  }
 
              } catch (e: IOException) {
@@ -188,19 +208,6 @@ class Config_Bluetooth_Fragment : Fragment() {
             return null
         }
 
-        /*
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-            if(!connectSuccess){
-                Log.i("data", "couldn't connect")
-            }
-            else{
-                m_isConnected = true
-            }
-
-            m_progress.dismiss()
-        }
-        */
     }
 
 }
