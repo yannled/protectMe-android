@@ -3,6 +3,7 @@ package zutt.protectme
 
 import android.Manifest
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val fragmentManager = supportFragmentManager
     private val fragmentTransaction = fragmentManager.beginTransaction()
-    private val REQUEST_LOCATION_PERMISSION = 101
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

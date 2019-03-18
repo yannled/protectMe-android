@@ -2,8 +2,8 @@ package zutt.protectme
 
 import android.app.Service
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.VpnService
-import android.net.VpnService.Builder
 import android.os.ParcelFileDescriptor
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -16,6 +16,8 @@ class MyVPNService : VpnService() {
     private var mThread: Thread? = null
     private var mInterface: ParcelFileDescriptor? = null
     val builder = Builder()
+    private val PREFS_FILENAME = "zutt.protectme.vpnconfig.prefs"
+    private var prefs: SharedPreferences? = getSharedPreferences(PREFS_FILENAME,0)
 
     // Services interface
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -24,9 +26,9 @@ class MyVPNService : VpnService() {
             try {
                 //a. Configure the TUN and get the interface.
                 mInterface = builder.setSession("MyVPNService")
-                        .addAddress("192.168.0.1", 24)
-                        .addDnsServer("8.8.8.8")
-                        .addRoute("0.0.0.0", 0).establish()
+                        .addAddress(prefs!!.getString("address","127.0.0.1"), 24)
+                        .addDnsServer(prefs!!.getString("dnsServer","8.8.8.8"))
+                        .addRoute(prefs!!.getString("route","0.0.0.0"), 0).establish()
                 //b. Packets to be sent are queued in this input stream.
                 val input = FileInputStream(
                         mInterface!!.fileDescriptor)

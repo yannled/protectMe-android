@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="22dp"
             android:gravity="center_horizontal"
             android:text="@string/hello_Bluetooth"
             android:textColor="#000"
@@ -28,7 +27,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="61dp"
+            android:layout_marginBottom="11dp"
             android:background="@color/disable"
             android:clickable="false"
             android:padding="20dp"
@@ -36,14 +35,16 @@
             android:textColor="#fff"
             android:textSize="20sp" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="129dp"
-            android:layout_height="124dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="151dp" />
+        <ListView
+            android:id="@+id/listBlueTooth"
+            android:layout_width="match_parent"
+            android:layout_height="271dp"
+            android:choiceMode="singleChoice"
+            android:listSelector="@color/myBlueDark"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="95dp" />
 
         <TextView
             android:id="@+id/textView3"
@@ -51,7 +52,7 @@
             android:layout_height="36dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="81dp"
+            android:layout_marginTop="46dp"
             android:text="@string/select_Bluetooth" />
 
 

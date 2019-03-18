@@ -15,32 +15,31 @@ import kotlinx.android.synthetic.main.fragment_bluetooth_config.*
 import android.content.IntentFilter
 import android.content.Intent
 import android.content.BroadcastReceiver
-import android.opengl.Visibility
 import android.os.AsyncTask
 import android.widget.AdapterView
 import java.io.IOException
-import java.security.KeyPair
-import java.security.KeyPairGenerator
 import java.util.*
-import javax.crypto.spec.SecretKeySpec
 
 
-class Config_Bluetooth_Fragment : Fragment() {
+class Config_Bluetooth_Fragment_old : Fragment() {
 
     companion object {
-        var PBOXNAME = "ProtectMe"
         lateinit var configurationModel: SharedViewModel
         var mBluetoothAdapter: BluetoothAdapter? = null
+        val DeviceList = arrayListOf<BluetoothDevice>() //list to get informations from selected bluetooth host
+        val mDeviceList = arrayListOf<String>() //list to show name in ListView
         var m_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
         var m_bluetoothSocket: BluetoothSocket? = null
         lateinit var m_progress: ProgressDialog
         var m_isConnected: Boolean = false
+        var m_device: BluetoothDevice? = null
+        lateinit var m_address: String
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bluetooth_config, container, false)
+        return inflater.inflate(R.layout.fragment_bluetooth_config_old, container, false)
     }
 
     override fun onAttach(context: Context) {
@@ -56,34 +55,32 @@ class Config_Bluetooth_Fragment : Fragment() {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        // Start bluetooth discovery
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         mBluetoothAdapter!!.startDiscovery()
 
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         activity!!.registerReceiver(mReceiver, filter)
 
-        // show circle waiting progress bar
-        progressBar.visibility = View.VISIBLE
+            for (device in DeviceList){
+                if(device.name == "ProtectMe"){
+                    configurationModel.bluetoothName = device.name
+                    configurationModel.bluetoothMac = device.address
 
+                    button_config_Bluetooth.setText(R.string.start_config)
+                    button_config_Bluetooth.setBackgroundResource(R.color.myBlueDark)
+                    button_config_Bluetooth.isClickable = true
+
+                    ConnectToDevice(this.context!!).execute()
+                    button_config_Bluetooth.setOnClickListener { view ->
+                        sendCommand("hello")
+                    }
+                }
+            }
     }
 
     override fun onDestroy() {
         activity!!.unregisterReceiver(mReceiver)
         super.onDestroy()
-    }
-
-    fun connectToPBOX(){
-        button_config_Bluetooth.setText(R.string.start_config)
-        button_config_Bluetooth.setBackgroundResource(R.color.myBlueDark)
-        button_config_Bluetooth.isClickable = true
-
-        ConnectToDevice(this.context!!).execute()
-        button_config_Bluetooth.setOnClickListener { view ->
-            sendCommand("hello")
-            var message = receiveCommand()
-            disconnect()
-        }
     }
 
     private val mReceiver = object : BroadcastReceiver() {
@@ -93,12 +90,16 @@ class Config_Bluetooth_Fragment : Fragment() {
                 val device = intent
                         .getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
 
-                if (!device.name.isNullOrEmpty() && device.name == PBOXNAME) {
-                    configurationModel.bluetoothName = device.name
-                    configurationModel.bluetoothMac = device.address
-                    progressBar.visibility = View.INVISIBLE
-                    connectToPBOX()
+                if (!device.name.isNullOrEmpty()) {
+                    if(!mDeviceList.contains(device.name)) {
+                        DeviceList.add(device)
+                        mDeviceList.add(device.name)
+                    }
                 }
+
+                /*
+                listBlueTooth.adapter = ArrayAdapter<String>(context,
+                        android.R.layout.simple_list_item_1, mDeviceList)*/
             }
         }
     }
@@ -111,24 +112,6 @@ class Config_Bluetooth_Fragment : Fragment() {
                 e.printStackTrace()
             }
         }
-    }
-
-    private fun receiveCommand() : String?{
-        if(m_bluetoothSocket != null){
-
-                val buffer = ByteArray(256)
-                var msg = ""
-                while(true) {
-                    try {
-                        val length = m_bluetoothSocket!!.inputStream.read()
-                        msg += String(buffer, 0, length)
-                    } catch (e: IOException) {
-                        break;
-                    }
-                }
-                return msg
-        }
-                return null
     }
 
     private fun disconnect(){
@@ -151,33 +134,18 @@ class Config_Bluetooth_Fragment : Fragment() {
             this.context = c
         }
 
-        /*
         override fun onPreExecute() {
             super.onPreExecute()
             m_progress = ProgressDialog.show(context, "Connecting...", "please wait")
-        }*/
+        }
 
         override fun doInBackground(vararg params: Void?): String? {
              try {
                  if (m_bluetoothSocket == null || !m_isConnected){
                     val device : BluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(configurationModel.bluetoothMac)
-                     //m_bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(m_UUID)
-                     m_bluetoothSocket = device.createRfcommSocketToServiceRecord(m_UUID)
+                     m_bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(m_UUID)
                      mBluetoothAdapter!!.cancelDiscovery()
                      m_bluetoothSocket!!.connect()
-
-                     var dh : DiffieHellmann = DiffieHellmann()
-                     dh.generateKeys()
-                     //TODO :  recevoir public key
-                     //dh.setReceivePublicKey(publicKey)
-                     dh.generateCommonSecretKey()
-                     dh.encryptMessage("Hello")
-
-                     //TODO envoyer
-
-                     //TODO recevoir
-
-                     //dh.decryptMessage()
                  }
 
              } catch (e: IOException) {
@@ -188,7 +156,6 @@ class Config_Bluetooth_Fragment : Fragment() {
             return null
         }
 
-        /*
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             if(!connectSuccess){
@@ -200,7 +167,6 @@ class Config_Bluetooth_Fragment : Fragment() {
 
             m_progress.dismiss()
         }
-        */
     }
 
 }
