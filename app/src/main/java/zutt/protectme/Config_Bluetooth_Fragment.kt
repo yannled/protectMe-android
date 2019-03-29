@@ -1,5 +1,6 @@
 package zutt.protectme
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProviders
 import android.bluetooth.*
@@ -18,10 +19,8 @@ import android.content.BroadcastReceiver
 import android.opengl.Visibility
 import android.os.AsyncTask
 import android.widget.AdapterView
+import android.util.Base64
 import java.io.IOException
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.PublicKey
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
@@ -74,7 +73,8 @@ class Config_Bluetooth_Fragment : Fragment() {
         super.onDestroy()
     }
 
-    // create the communication canal with the Protect Me Box
+    @SuppressLint("NewApi")
+// create the communication canal with the Protect Me Box
     fun communicate(){
         ConnectToDevice(this.context!!).execute()
 
@@ -89,23 +89,22 @@ class Config_Bluetooth_Fragment : Fragment() {
 
             // TODO : Store the keys in properties file the change getPublicKey to store PublicKey
             // TODO : retrive the publickey to send it
-            // We send our publicKey
-            sendCommand(dh.getPublicKey())
+            // We send our publicKey, p and g
 
-            //TODO :  recevoir public key
+            sendCommand(dh.getPublicKey())
+            sendCommand("endCryptoExchange")
+
             var receivedPublicKey = receiveCommand()
+
             dh.setReceivePublicKey(receivedPublicKey)
 
             dh.generateCommonSecretKey()
 
-            //Send our message
-            dh.encryptMessage("Hello")
-
-            // retrive the response
-            var response = receiveCommand()
-            if(response != null) {
-                response = dh.decryptMessage(response.toByteArray())
-            }
+            var plaintext = "{" + configurationModel.wifiSsid + "}{" + configurationModel.wifiPassword + "}"
+            val cypherText = dh.encryptMessage(plaintext)
+            var test = cypherText.toString()
+            //var test2 = Base64.encodeToString(cypherText.toByteArray(Charsets.UTF_8), Base64.NO_WRAP
+            sendCommand(cypherText)
 
             disconnect()
         }
@@ -136,18 +135,10 @@ class Config_Bluetooth_Fragment : Fragment() {
 
     private fun receiveCommand() : String?{
         if(m_bluetoothSocket != null){
-
-            val buffer = ByteArray(256)
-            var msg = ""
-            while(true) {
-                try {
-                    val length = m_bluetoothSocket!!.inputStream.read()
-                    msg += String(buffer, 0, length)
-                } catch (e: IOException) {
-                    break;
-                }
-            }
-            return msg
+            var buffer : ByteArray = ByteArray(1024)
+            val length = m_bluetoothSocket!!.inputStream.read(buffer)
+            var msg = String(buffer, Charsets.UTF_8)
+            return msg.substring(0, length)
         }
         return null
     }
