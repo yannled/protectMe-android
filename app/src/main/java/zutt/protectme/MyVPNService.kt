@@ -11,13 +11,17 @@ import java.net.InetSocketAddress
 import java.nio.channels.DatagramChannel
 
 
-class MyVPNService : VpnService() {
+class MyVPNService(preferencesFile : SharedPreferences) : VpnService() {
 
     private var mThread: Thread? = null
     private var mInterface: ParcelFileDescriptor? = null
     val builder = Builder()
-    private val PREFS_FILENAME = "zutt.protectme.vpnconfig.prefs"
-    private var prefs: SharedPreferences? = getSharedPreferences(PREFS_FILENAME,0)
+    private var prefs: SharedPreferences? = null
+
+    init {
+
+        this.prefs = preferencesFile
+    }
 
     // Services interface
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {

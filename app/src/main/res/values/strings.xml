@@ -47,5 +47,6 @@
 
     <!-- Configuration_Bluetooth view -->
     <string name="hello_Bluetooth">2. Bluetooth</string>
-    <string name="select_Bluetooth">Wait, then select you ProtectMe! Box</string>
+    <string name="select_Bluetooth">Wait then clic on Start Configuration</string>
+    <string name="wait_Bluetooth_conf">Wait during configuration</string>
 </resources>

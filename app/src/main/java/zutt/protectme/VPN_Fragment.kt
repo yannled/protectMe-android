@@ -1,6 +1,7 @@
 package zutt.protectme
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.VpnService
@@ -15,18 +16,25 @@ import kotlinx.android.synthetic.main.fragment_vpn.*
 
 class VPN_Fragment : Fragment() {
 
-    private val PREFS_FILENAME = "zutt.protectme.vpnconfig.prefs"
+    private val PREFERENCE_CONFIG_NAME = "boxes"
     private var prefs: SharedPreferences? = null
+    private var res : ressource? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        prefs = context!!.getSharedPreferences(PREFS_FILENAME,0)
+        prefs = context!!.getSharedPreferences(PREFERENCE_CONFIG_NAME,0)
+    }
+
+    fun getContextOfApplication(): Context {
+        return context!!
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        res = ressource(prefs!!)
+        var listBoxes = res!!.getProtectMeBoxes()
         vpnConnect.setOnClickListener { view ->
-            if(prefs!!.getString("address","null") == "null"){
+            if(listBoxes.size  == 0){
                 Toast.makeText(this.context, "CONFIGURE BEFORE CONNECT", Toast.LENGTH_SHORT).show()
             }
             else {
@@ -54,7 +62,7 @@ class VPN_Fragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
-            this.context!!.startService(Intent(this.context, MyVPNService::class.java))
+            this.context!!.startService(Intent(this.context, MyVPNService(prefs!!)::class.java))
         }
     }
 }

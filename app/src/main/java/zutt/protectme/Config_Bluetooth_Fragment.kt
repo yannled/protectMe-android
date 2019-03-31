@@ -1,29 +1,19 @@
 package zutt.protectme
 
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProviders
 import android.bluetooth.*
-import android.content.Context
+import android.content.*
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import kotlinx.android.synthetic.main.fragment_bluetooth_config.*
-import android.content.IntentFilter
-import android.content.Intent
-import android.content.BroadcastReceiver
-import android.opengl.Visibility
 import android.os.AsyncTask
-import android.widget.AdapterView
-import android.util.Base64
+import android.widget.ProgressBar
+import kotlinx.android.synthetic.main.fragment_bluetooth_config.*
 import java.io.IOException
 import java.util.*
-import javax.crypto.spec.SecretKeySpec
-
 
 class Config_Bluetooth_Fragment : Fragment() {
 
@@ -33,8 +23,9 @@ class Config_Bluetooth_Fragment : Fragment() {
         var mBluetoothAdapter: BluetoothAdapter? = null
         var m_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
         var m_bluetoothSocket: BluetoothSocket? = null
-        lateinit var m_progress: ProgressDialog
         var m_isConnected: Boolean = false
+        var PREFERENCE_CONFIG_NAME = "boxes"
+        var prefs: SharedPreferences? = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -56,15 +47,13 @@ class Config_Bluetooth_Fragment : Fragment() {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
+        prefs  = this.activity!!.getSharedPreferences(PREFERENCE_CONFIG_NAME,0)
         // Start bluetooth discovery
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         mBluetoothAdapter!!.startDiscovery()
 
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         activity!!.registerReceiver(mReceiver, filter)
-
-        // show circle waiting progress bar
-        progressBar.visibility = View.VISIBLE
 
     }
 
@@ -75,38 +64,16 @@ class Config_Bluetooth_Fragment : Fragment() {
 
     @SuppressLint("NewApi")
 // create the communication canal with the Protect Me Box
-    fun communicate(){
+    fun contactDevice(){
         ConnectToDevice(this.context!!).execute()
 
         // Start communication when click on button
         button_config_Bluetooth.setOnClickListener { view ->
+            progressBar.visibility = View.VISIBLE
+            button_config_Bluetooth.visibility = View.INVISIBLE
+            textView_bluetooth.setText(R.string.wait_Bluetooth_conf)
 
-            // Start crypted communication
-            var dh  = DiffieHellmann()
-
-            // Generation of private and public keys
-            dh.generateKeys()
-
-            // TODO : Store the keys in properties file the change getPublicKey to store PublicKey
-            // TODO : retrive the publickey to send it
-            // We send our publicKey, p and g
-
-            sendCommand(dh.getPublicKey())
-            sendCommand("endCryptoExchange")
-
-            var receivedPublicKey = receiveCommand()
-
-            dh.setReceivePublicKey(receivedPublicKey)
-
-            dh.generateCommonSecretKey()
-
-            var plaintext = "{" + configurationModel.wifiSsid + "}{" + configurationModel.wifiPassword + "}"
-            val cypherText = dh.encryptMessage(plaintext)
-            var test = cypherText.toString()
-            //var test2 = Base64.encodeToString(cypherText.toByteArray(Charsets.UTF_8), Base64.NO_WRAP
-            sendCommand(cypherText)
-
-            disconnect()
+            Communicate().execute()
         }
     }
 
@@ -135,9 +102,9 @@ class Config_Bluetooth_Fragment : Fragment() {
 
     private fun receiveCommand() : String?{
         if(m_bluetoothSocket != null){
-            var buffer : ByteArray = ByteArray(1024)
+            val buffer : ByteArray = ByteArray(1024)
             val length = m_bluetoothSocket!!.inputStream.read(buffer)
-            var msg = String(buffer, Charsets.UTF_8)
+            val msg = String(buffer, Charsets.UTF_8)
             return msg.substring(0, length)
         }
         return null
@@ -146,6 +113,7 @@ class Config_Bluetooth_Fragment : Fragment() {
     // Handling the bluetooth discovery informations
     private val mReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            progressBar.visibility = View.VISIBLE
             val action = intent.action
             if (BluetoothDevice.ACTION_FOUND == action) {
                 val device = intent
@@ -157,29 +125,16 @@ class Config_Bluetooth_Fragment : Fragment() {
                     configurationModel.bluetoothName = device.name
                     configurationModel.bluetoothMac = device.address
 
-                    // hide the cicrcle waiting progress bar
-                    progressBar.visibility = View.INVISIBLE
-
-                    // update the button interface to begin communication
-                    button_config_Bluetooth.setText(R.string.start_config)
-                    button_config_Bluetooth.setBackgroundResource(R.color.myBlueDark)
-                    button_config_Bluetooth.isClickable = true
-
                     // Start connection then communication with the ProtectMe Box
-                    communicate()
+                    contactDevice()
                 }
             }
         }
     }
 
     // create the communication canal between the pair Bluetooth devices
-    private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
+    inner class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
         private var connectSuccess: Boolean = true
-        private var context: Context
-
-        init {
-            this.context = c
-        }
 
         override fun doInBackground(vararg params: Void?): String? {
              try {
@@ -199,6 +154,61 @@ class Config_Bluetooth_Fragment : Fragment() {
             return null
         }
 
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+            // update the interface to begin communication
+            progressBar.visibility = View.INVISIBLE
+            button_config_Bluetooth.setText(R.string.start_config)
+            button_config_Bluetooth.setBackgroundResource(R.color.myBlueDark)
+            button_config_Bluetooth.isClickable = true
+        }
     }
 
+    inner class Communicate() : AsyncTask<Void, Void, String>() {
+        var protectMeIp : String? = null
+
+        override fun doInBackground(vararg params: Void?): String? {
+            var dh  = DiffieHellmann()
+
+            // Generation of private and public keys
+            dh.generateKeys()
+
+            // We send our publicKey, p and g
+            sendCommand(dh.getPublicKey())
+            sendCommand("endCryptoExchange")
+
+            // we receive PublicKey from the ProtectMe Box
+            val receivedPublicKey = receiveCommand()
+
+            // We set the receivedPublicKey
+            dh.setReceivePublicKey(receivedPublicKey)
+
+            // We Generate SecretSharedKey
+            dh.generateCommonSecretKey()
+
+            // We send Wifi configurations
+            val plaintext = "{" + configurationModel.wifiSsid + "}{" + configurationModel.wifiPassword + "}"
+            val cypherText = dh.encryptMessage(plaintext)
+            sendCommand(cypherText)
+
+            // We get the IP from the ProtectMe Box
+            val cipherIP = receiveCommand()
+            protectMeIp = dh.decryptMessage(cipherIP!!)
+
+            disconnect()
+
+            return null
+        }
+
+        override fun onPostExecute(result: String?) {
+            progressBar.visibility = View.INVISIBLE
+            var res : ressource = ressource(prefs!!)
+            res.addProtectMeBoxe(configurationModel.bluetoothMac!!, configurationModel.bluetoothName!!, configurationModel.wifiSsid!!, protectMeIp!!)
+            //var test = res.getProtectMeBoxes()
+            //res.modifyProctectMeBoxe("2testMac", "modifyName", "2testssid", "2testip")
+            //var prout = res.getProtectMeBoxe("2testMac")
+        }
+    }
 }
+
+
