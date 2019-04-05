@@ -34,7 +34,9 @@ class VPN_Fragment : Fragment() {
         res = ressource(prefs!!)
         var listBoxes = res!!.getProtectMeBoxes()
         vpnConnect.setOnClickListener { view ->
-            if(listBoxes.size  == 0){
+            //TODO : Uncomment following line
+            if (false){
+            // /if(listBoxes.size  == 0){
                 Toast.makeText(this.context, "CONFIGURE BEFORE CONNECT", Toast.LENGTH_SHORT).show()
             }
             else {
@@ -62,7 +64,9 @@ class VPN_Fragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
-            this.context!!.startService(Intent(this.context, MyVPNService(prefs!!)::class.java))
+            val vpnIntent = Intent(this.context, MyVPNService()::class.java)
+            vpnIntent.putExtra("ip", prefs!!.getString("address","10.8.0.1"))
+            this.context!!.startService(vpnIntent)
         }
     }
 }

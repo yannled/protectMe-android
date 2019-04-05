@@ -1,6 +1,5 @@
 package zutt.protectme
 
-import android.annotation.SuppressLint
 import java.math.BigInteger
 import java.security.*
 import java.security.SecureRandom
@@ -81,13 +80,19 @@ class DiffieHellmann(){
         publicKey  = keyPair.public
     }
 
-
-    @SuppressLint("NewApi")
     fun getPublicKey(): String?{
-        return publicKey.toString()
+        val key = publicKey.toString()
+        //test if publicKey.toString() return content in format like "OpenSSLDHPublicKey..."
+        // if yes it's ok, the smartphone is an old one
+        // if not I create the right format
+        if(key.contains("OpenSSLDHPublickey"))
+            return key
+        val Y : BigInteger = BigInteger(publicKey.encoded)
+        val stringKey = "OpenSSLDHPublicKey{Y=" + Y.toString() + ",P=" + p.toString() + ",G=" + g.toString() + "}"
+        return stringKey
+
     }
 
-    @SuppressLint("NewApi")
     fun setReceivePublicKey(PublicKey: String?){
         if(PublicKey != null) {
             receivePublickeyInteger = PublicKey.toBigInteger(10)
@@ -99,9 +104,9 @@ class DiffieHellmann(){
 
     fun decryptMessage(message : String) : String {
         var cipherText = Base64.decode(message,0)
-        val keySpec : SecretKeySpec = SecretKeySpec(secretKey, cryptoAlgorithm)
+        val keySpec  = SecretKeySpec(secretKey, cryptoAlgorithm)
         val cipher : Cipher = Cipher.getInstance(transformation)
-        val ivSpec : IvParameterSpec = IvParameterSpec(iv)
+        val ivSpec  = IvParameterSpec(iv)
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec)
 
         // Decrypt and take of the IV

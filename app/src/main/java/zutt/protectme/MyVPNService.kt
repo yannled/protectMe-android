@@ -2,7 +2,6 @@ package zutt.protectme
 
 import android.app.Service
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.VpnService
 import android.os.ParcelFileDescriptor
 import java.io.FileInputStream
@@ -11,28 +10,26 @@ import java.net.InetSocketAddress
 import java.nio.channels.DatagramChannel
 
 
-class MyVPNService(preferencesFile : SharedPreferences) : VpnService() {
+class MyVPNService : VpnService() {
 
     private var mThread: Thread? = null
     private var mInterface: ParcelFileDescriptor? = null
     val builder = Builder()
-    private var prefs: SharedPreferences? = null
 
-    init {
-
-        this.prefs = preferencesFile
-    }
 
     // Services interface
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         // Start a new session by creating a new thread.
+        val extras = intent.extras
+        var address = extras.get("address")
         mThread = Thread(Runnable {
             try {
                 //a. Configure the TUN and get the interface.
                 mInterface = builder.setSession("MyVPNService")
-                        .addAddress(prefs!!.getString("address","127.0.0.1"), 24)
-                        .addDnsServer(prefs!!.getString("dnsServer","8.8.8.8"))
-                        .addRoute(prefs!!.getString("route","0.0.0.0"), 0).establish()
+                        .addAddress("10.0.0.8", 24)
+                        .addDnsServer("8.8.8.8")
+                        .addRoute("0.0.0.0", 0).establish()
+                val builder = Builder()
                 //b. Packets to be sent are queued in this input stream.
                 val input = FileInputStream(
                         mInterface!!.fileDescriptor)
@@ -42,7 +39,7 @@ class MyVPNService(preferencesFile : SharedPreferences) : VpnService() {
                 //c. The UDP channel can be used to pass/get ip package to/from server
                 val tunnel = DatagramChannel.open()
                 // Connect to the server, localhost is used for demonstration only.
-                tunnel.connect(InetSocketAddress("127.0.0.1", 8087))
+                tunnel.connect(InetSocketAddress("10.0.0.9", 1194))
                 //d. Protect this socket, so package send by it will not be feedback to the vpn service.
                 protect(tunnel.socket())
                 //e. Use a loop to pass packets.
@@ -77,7 +74,6 @@ class MyVPNService(preferencesFile : SharedPreferences) : VpnService() {
     }
 
     override fun onDestroy() {
-        // TODO Auto-generated method stub
         if (mThread != null) {
             mThread!!.interrupt()
         }
