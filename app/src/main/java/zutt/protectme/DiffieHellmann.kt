@@ -4,8 +4,11 @@ import java.math.BigInteger
 import java.security.*
 import java.security.SecureRandom
 import android.util.Base64
+import java.security.spec.PKCS8EncodedKeySpec
 import javax.crypto.Cipher
 import javax.crypto.KeyAgreement
+import javax.crypto.interfaces.DHPrivateKey
+import javax.crypto.interfaces.DHPublicKey
 import javax.crypto.spec.*
 
 
@@ -16,9 +19,9 @@ Source : https://github.com/firatkucuk/diffie-hellman-helloworld
 class DiffieHellmann(){
 
     companion object {
-        lateinit var privateKey: PrivateKey
-        lateinit var publicKey: PublicKey
-        lateinit var receivePublicKey: PublicKey
+        lateinit var privateKey: DHPrivateKey
+        lateinit var publicKey: DHPublicKey
+        lateinit var receivePublicKey: DHPublicKey
         lateinit var secretKey: ByteArray
         val cryptoAlgorithm : String = "AES"
         val algorithm : String = "DH"
@@ -63,7 +66,9 @@ class DiffieHellmann(){
         keyAgreement.init(privateKey)
         keyAgreement.doPhase(receivePublicKey,true)
         var tempKey = keyAgreement.generateSecret(cryptoAlgorithm).encoded
+        var test1 = BigInteger(1,tempKey)
         secretKey = shortenSecretKey(tempKey)
+        var test = BigInteger(1,secretKey)
     }
 
     fun generateKeys(){
@@ -75,9 +80,9 @@ class DiffieHellmann(){
         val dhParameterSpec = DHParameterSpec(p,g)
         keyPairGenerator.initialize(dhParameterSpec)
 
-        val keyPair : KeyPair = keyPairGenerator.generateKeyPair()
-        privateKey = keyPair.private
-        publicKey  = keyPair.public
+        val keyPair : KeyPair = keyPairGenerator.genKeyPair()
+        privateKey = keyPair.private as DHPrivateKey
+        publicKey = keyPair.public as DHPublicKey
     }
 
     fun getPublicKey(): String?{
@@ -87,7 +92,7 @@ class DiffieHellmann(){
         // if not I create the right format
         if(key.contains("OpenSSLDHPublickey"))
             return key
-        val Y : BigInteger = BigInteger(publicKey.encoded)
+        val Y : BigInteger = publicKey.y
         val stringKey = "OpenSSLDHPublicKey{Y=" + Y.toString() + ",P=" + p.toString() + ",G=" + g.toString() + "}"
         return stringKey
 
@@ -98,7 +103,7 @@ class DiffieHellmann(){
             receivePublickeyInteger = PublicKey.toBigInteger(10)
             val kf : KeyFactory  = KeyFactory.getInstance(algorithm)
             val spec = DHPublicKeySpec(receivePublickeyInteger,p, g)
-            receivePublicKey = kf.generatePublic(spec)
+            receivePublicKey = kf.generatePublic(spec) as DHPublicKey
         }
     }
 
