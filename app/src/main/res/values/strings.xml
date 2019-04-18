@@ -14,7 +14,9 @@
     <!-- Main view -->
     <string name="hello_VPN">Click on connect to be secure !</string>
     <string name="hello_blank_fragment_config">Hello blank fragment for config</string>
-    <string name="connect">CONNECT !</string>
+    <string name="VPN_connect">CONNECT !</string>
+    <string name="VPN_connectStart">Start VPN!</string>
+    <string name="VPN_connectStop">Stop VPN!</string>
 
     <!-- view_information -->
     <string name="title_information">How to use ProtectMe!</string>

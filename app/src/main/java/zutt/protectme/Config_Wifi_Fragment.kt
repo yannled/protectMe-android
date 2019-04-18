@@ -43,7 +43,8 @@ class Config_Wifi_Fragment : Fragment() {
         // Get the SSID of the connected wifi
         val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val wifiInfo = wifiManager.connectionInfo
-        ssid = wifiInfo.ssid
+        //get SSID and escape the " "
+        ssid = wifiInfo.ssid.substring(1, wifiInfo.ssid.length-1)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

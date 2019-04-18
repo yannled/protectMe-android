@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/circlebutton"
         android:layout_gravity="center"
-        android:text="@string/connect"
+        android:text="@string/VPN_connect"
         android:textSize="30sp"
         android:textColor="#fff"/>
 

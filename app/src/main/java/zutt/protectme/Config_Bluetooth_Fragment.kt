@@ -1,6 +1,7 @@
 package zutt.protectme
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
 import android.bluetooth.*
 import android.content.*
@@ -14,6 +15,10 @@ import android.widget.ProgressBar
 import kotlinx.android.synthetic.main.fragment_bluetooth_config.*
 import java.io.IOException
 import java.util.*
+import android.content.Context.MODE_PRIVATE
+import android.util.Log
+import java.io.OutputStreamWriter
+
 
 class Config_Bluetooth_Fragment : Fragment() {
 
@@ -73,7 +78,7 @@ class Config_Bluetooth_Fragment : Fragment() {
             button_config_Bluetooth.visibility = View.INVISIBLE
             textView_bluetooth.setText(R.string.wait_Bluetooth_conf)
 
-            Communicate().execute()
+            Communicate(this.context!!).execute()
         }
     }
 
@@ -100,14 +105,46 @@ class Config_Bluetooth_Fragment : Fragment() {
         }
     }
 
-    private fun receiveCommand() : String?{
+    private fun receiveCommand(lengthToRead : Int?) : String?{
         if(m_bluetoothSocket != null){
+            try {
+                var BUFFERSIZE = 1024
+                var numberByteToRead = BUFFERSIZE
+                if(lengthToRead != null)
+                    numberByteToRead = lengthToRead
+
+                var message = ""
+                var charsRead = 0
+                val buffer = ByteArray(BUFFERSIZE)
+
+                while (true){
+                    charsRead = m_bluetoothSocket!!.inputStream.read(buffer)
+                    numberByteToRead = numberByteToRead - charsRead
+                    message += String(buffer).substring(0,charsRead)
+                    if(numberByteToRead <= BUFFERSIZE)
+                        break
+                }
+                return message
+            } catch (e: IOException) {
+                return "Error receiving response:  " + e.message
+            }
+
+            /*
             val buffer : ByteArray = ByteArray(1024)
             val length = m_bluetoothSocket!!.inputStream.read(buffer)
             val msg = String(buffer, Charsets.UTF_8)
             return msg.substring(0, length)
+            */
         }
         return null
+    }
+
+    private fun writeVpnProfileToFile(data: String, context: Context) {
+        val files = FileManager(context)
+        val filename = configurationModel.wifiSsid!! + "_" + configurationModel.bluetoothName!! + "_" + configurationModel.bluetoothMac!!
+        if(!files.addFile(filename, data)) {
+            Log.d("FileManagerError","ERROR FILE CREATION")
+        }
     }
 
     // Handling the bluetooth discovery informations
@@ -164,9 +201,12 @@ class Config_Bluetooth_Fragment : Fragment() {
         }
     }
 
-    inner class Communicate() : AsyncTask<Void, Void, String>() {
-        var protectMeIp : String? = null
-
+    inner class Communicate(c: Context) : AsyncTask<Void, Void, String>() {
+        var ovpnProfile : String? = null
+        var context : Context? = null
+        init {
+            this.context = c
+        }
         override fun doInBackground(vararg params: Void?): String? {
             var dh  = DiffieHellmann()
 
@@ -178,7 +218,8 @@ class Config_Bluetooth_Fragment : Fragment() {
             sendCommand("endCryptoExchange")
 
             // we receive PublicKey from the ProtectMe Box
-            val receivedPublicKey = receiveCommand()
+            val lengthPublicKey = receiveCommand(null)
+            val receivedPublicKey = receiveCommand(lengthPublicKey!!.toInt())
 
             // We set the receivedPublicKey
             dh.setReceivePublicKey(receivedPublicKey)
@@ -191,9 +232,13 @@ class Config_Bluetooth_Fragment : Fragment() {
             val cypherText = dh.encryptMessage(plaintext)
             sendCommand(cypherText)
 
-            // We get the IP from the ProtectMe Box
-            val cipherIP = receiveCommand()
-            protectMeIp = dh.decryptMessage(cipherIP!!)
+            // We get the OpenVPN profile from the ProtectMe Box(.ovpn file)
+            val lengthCipherText = receiveCommand(null)
+            val ovpnProfile = receiveCommand(lengthCipherText!!.toInt())
+            //val cipherOvpnFile = receiveCommand(lengthCipherText!!.toInt())
+            //ovpnProfile = dh.decryptMessage(cipherOvpnFile!!)
+
+            writeVpnProfileToFile(ovpnProfile!!, this.context!!)
 
             disconnect()
 
@@ -202,8 +247,8 @@ class Config_Bluetooth_Fragment : Fragment() {
 
         override fun onPostExecute(result: String?) {
             progressBar.visibility = View.INVISIBLE
-            var res : ressource = ressource(prefs!!)
-            res.addProtectMeBoxe(configurationModel.bluetoothMac!!, configurationModel.bluetoothName!!, configurationModel.wifiSsid!!, protectMeIp!!)
+            //var res : ressource = ressource(prefs!!)
+            //res.addProtectMeBoxe(configurationModel.bluetoothMac!!, configurationModel.bluetoothName!!, configurationModel.wifiSsid!!)
             //var test = res.getProtectMeBoxes()
             //res.modifyProctectMeBoxe("2testMac", "modifyName", "2testssid", "2testip")
             //var prout = res.getProtectMeBoxe("2testMac")

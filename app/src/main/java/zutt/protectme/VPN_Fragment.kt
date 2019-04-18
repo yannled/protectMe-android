@@ -15,27 +15,16 @@ import android.content.ComponentName
 import android.app.Activity
 import android.os.IBinder
 import android.content.ServiceConnection
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_vpn.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import de.blinkt.openvpn.api.APIVpnProfile
 
-
+/**
+ * Source : https://github.com/schwabe/ics-openvpn/tree/master/remoteExample
+ */
 class VPN_Fragment : Fragment() {
 
-    companion object {
-        var NAME = "connection"
-        var SERVER_ADDRESS = "server.address"
-        var SERVER_PORT = "server.port"
-        var SHARED_SECRET = "shared.secret"
-        var PROXY_HOSTNAME = "proxyhost"
-        var PROXY_PORT = "proxyport"
-        var ALLOW = "allow"
-        var PACKAGES = "packages"
-    }
-
-    private val MSG_UPDATE_STATE = 0
-    private val MSG_UPDATE_MYIP = 1
     private val START_PROFILE_EMBEDDED = 2
     private val START_PROFILE_BYUUID = 3
     private val ICS_OPENVPN_PERMISSION = 7
@@ -53,19 +42,17 @@ class VPN_Fragment : Fragment() {
         prefs = context!!.getSharedPreferences(PREFERENCE_CONFIG_NAME, 0)
     }
 
-    fun getContextOfApplication(): Context {
-        return context!!
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         res = ressource(prefs!!)
-        var listBoxes = res!!.getProtectMeBoxes()
         vpnConnect.setOnClickListener { view ->
+            //TODO : See if configuration default exist
+            vpnButtonDefineUI(false)
             if(connected){
                 try {
                     vpnService!!.disconnect()
                     connected = false
+                    vpnButtonDefineUI(false)
                 }
                 catch (e : RemoteException){
                     e.printStackTrace()
@@ -76,21 +63,23 @@ class VPN_Fragment : Fragment() {
                     prepareStartProfile(PROFILE_ADD_NEW)
                     prepareStartProfile(START_PROFILE_EMBEDDED)
                     connected = true
+                    vpnButtonDefineUI(connected)
                 }
                 catch (e : RemoteException){
                     e.printStackTrace()
                 }
             }
-            /*
-            if (listBoxes.size == 0) {
-                Toast.makeText(this.context, "CONFIGURE BEFORE CONNECT", Toast.LENGTH_SHORT).show()
-            } else {
-                vpnConnect.setBackgroundResource(R.drawable.circlebuttongreen)
-                //TODO : Get params from ressource to companion object
-                startVPN()
-            }
-            */
+        }
+    }
 
+    fun vpnButtonDefineUI(vpnStart : Boolean){
+        if(vpnStart){
+            vpnConnect.setBackgroundResource(R.drawable.circlebuttonred)
+            vpnConnect.setText(R.string.VPN_connectStop)
+        }
+        else{
+            vpnConnect.setBackgroundResource(R.drawable.circlebuttongreen)
+            vpnConnect.setText(R.string.VPN_connectStart)
         }
     }
 
@@ -102,7 +91,9 @@ class VPN_Fragment : Fragment() {
     private fun startEmbeddedProfile(addNew: Boolean) {
         try {
 
-            val conf = activity!!.assets.open("test.conf")
+            val files  = FileManager(this.context!!)
+            var config = files.readDefaultFile()
+            /*val conf = activity!!.assets.open("test.conf")
             val isr = InputStreamReader(conf)
             val br = BufferedReader(isr)
             var config : String = ""
@@ -113,7 +104,7 @@ class VPN_Fragment : Fragment() {
                     break
                 config += line + "\n"
             }
-            br.readLine()
+            br.readLine()*/
 
             if (addNew)
                 vpnService!!.addNewVPNProfile("nonEditable", false, config)
