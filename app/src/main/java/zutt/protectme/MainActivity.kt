@@ -128,7 +128,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_list -> {
-
+                val listBoxFragment = ListBox_Fragment()
+                openFragment(listBoxFragment)
             }
         }
 

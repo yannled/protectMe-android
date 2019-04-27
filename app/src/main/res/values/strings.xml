@@ -17,6 +17,8 @@
     <string name="VPN_connect">CONNECT !</string>
     <string name="VPN_connectStart">Start VPN!</string>
     <string name="VPN_connectStop">Stop VPN!</string>
+    <string name="ConnectTO">Connected to : </string>
+    <string name="ConnectTONothing">No configurations !</string>
 
     <!-- view_information -->
     <string name="title_information">How to use ProtectMe!</string>
@@ -51,4 +53,10 @@
     <string name="hello_Bluetooth">2. Bluetooth</string>
     <string name="select_Bluetooth">Wait then clic on Start Configuration</string>
     <string name="wait_Bluetooth_conf">Wait during configuration</string>
+
+    <!-- List Box view -->
+    <string name="ListBOX">List Box</string>
+    <string name="ManageBox">rename, delete or make default your box</string>
+    <string name="renameBox">Type new name</string>
+    <string name="ButtonRename">Rename</string>
 </resources>

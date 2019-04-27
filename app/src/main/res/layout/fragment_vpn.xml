@@ -1,28 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".VPN_Fragment">
 
     <TextView
-        android:layout_marginTop="10dp"
-        android:textColor="#000"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_VPN"
+        android:layout_height="779dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
+        android:text="@string/hello_VPN"
+        android:textColor="#000"
         android:textSize="25sp" />
 
 
-    <Button
-        android:id="@+id/vpnConnect"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/InnerRelativeLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/circlebutton"
-        android:layout_gravity="center"
-        android:text="@string/VPN_connect"
-        android:textSize="30sp"
-        android:textColor="#fff"/>
+        android:gravity="center_horizontal"
+        android:paddingBottom="50dp"
+        android:layout_alignParentBottom="true">
 
-</FrameLayout>
+        <Button
+            android:id="@+id/vpnConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/circlebutton"
+            android:text="@string/VPN_connect"
+            android:textColor="#fff"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="85dp"
+        android:gravity="center_horizontal"
+        android:text="@string/ConnectTO"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/vpn_connectTo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="125dp"
+        android:gravity="center_horizontal"
+        android:text="@string/ConnectTONothing"
+        android:textSize="22sp" />
+
+</RelativeLayout>

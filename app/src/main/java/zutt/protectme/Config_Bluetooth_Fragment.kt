@@ -18,6 +18,7 @@ import java.util.*
 import android.content.Context.MODE_PRIVATE
 import android.util.Log
 import java.io.OutputStreamWriter
+import java.nio.charset.Charset
 
 
 class Config_Bluetooth_Fragment : Fragment() {
@@ -52,7 +53,7 @@ class Config_Bluetooth_Fragment : Fragment() {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        prefs  = this.activity!!.getSharedPreferences(PREFERENCE_CONFIG_NAME,0)
+        prefs = this.activity!!.getSharedPreferences(PREFERENCE_CONFIG_NAME, 0)
         // Start bluetooth discovery
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         mBluetoothAdapter!!.startDiscovery()
@@ -69,7 +70,7 @@ class Config_Bluetooth_Fragment : Fragment() {
 
     @SuppressLint("NewApi")
 // create the communication canal with the Protect Me Box
-    fun contactDevice(){
+    fun contactDevice() {
         ConnectToDevice(this.context!!).execute()
 
         // Start communication when click on button
@@ -83,20 +84,20 @@ class Config_Bluetooth_Fragment : Fragment() {
     }
 
     // disconnect bluetooth Socket
-    private fun disconnect(){
-        if (m_bluetoothSocket != null){
+    private fun disconnect() {
+        if (m_bluetoothSocket != null) {
             try {
                 m_bluetoothSocket!!.close()
                 m_bluetoothSocket = null
                 m_isConnected = false
-            } catch (e: IOException){
+            } catch (e: IOException) {
                 e.printStackTrace()
             }
         }
     }
 
-    private fun sendCommand(input: String?){
-        if(m_bluetoothSocket != null && input != null){
+    private fun sendCommand(input: String?) {
+        if (m_bluetoothSocket != null && input != null) {
             try {
                 m_bluetoothSocket!!.outputStream.write(input.toByteArray())
             } catch (e: IOException) {
@@ -105,35 +106,36 @@ class Config_Bluetooth_Fragment : Fragment() {
         }
     }
 
-    private fun receiveCommand(lengthToRead : Int?) : String?{
-        if(m_bluetoothSocket != null){
-            try {
-                var BUFFERSIZE = 1024
-                var numberByteToRead = BUFFERSIZE
-                if(lengthToRead != null)
-                    numberByteToRead = lengthToRead
+    private fun receiveCommand(lengthToRead: Int?): String? {
+        if (m_bluetoothSocket != null) {
+            var bufferSize = 1024
 
-                var message = ""
-                var charsRead = 0
-                val buffer = ByteArray(BUFFERSIZE)
+            if(lengthToRead != null)
+                bufferSize = lengthToRead
 
-                while (true){
-                    charsRead = m_bluetoothSocket!!.inputStream.read(buffer)
-                    numberByteToRead = numberByteToRead - charsRead
-                    message += String(buffer).substring(0,charsRead)
-                    if(numberByteToRead <= BUFFERSIZE)
-                        break
-                }
-                return message
-            } catch (e: IOException) {
-                return "Error receiving response:  " + e.message
-            }
-
-            /*
-            val buffer : ByteArray = ByteArray(1024)
+            val buffer: ByteArray = ByteArray(bufferSize)
             val length = m_bluetoothSocket!!.inputStream.read(buffer)
             val msg = String(buffer, Charsets.UTF_8)
             return msg.substring(0, length)
+            /*
+            var bufferSize = 1024
+
+            if(lengthToRead != null) {
+                var msg = ""
+                while (true){
+                    val buffer: ByteArray = ByteArray(bufferSize)
+                    val length = m_bluetoothSocket!!.inputStream.read(buffer)
+                    msg += String(buffer, Charsets.UTF_8)
+                    if(msg.length >= lengthToRead)
+                        return msg.substring(0,lengthToRead)
+                }
+            }
+            else {
+                val buffer: ByteArray = ByteArray(bufferSize)
+                val length = m_bluetoothSocket!!.inputStream.read(buffer)
+                val msg = String(buffer, Charsets.UTF_8)
+                return msg.substring(0, length)
+            }
             */
         }
         return null
@@ -142,8 +144,8 @@ class Config_Bluetooth_Fragment : Fragment() {
     private fun writeVpnProfileToFile(data: String, context: Context) {
         val files = FileManager(context)
         val filename = configurationModel.wifiSsid!! + "_" + configurationModel.bluetoothName!! + "_" + configurationModel.bluetoothMac!!
-        if(!files.addFile(filename, data)) {
-            Log.d("FileManagerError","ERROR FILE CREATION")
+        if (!files.addFile(filename, data)) {
+            Log.d("FileManagerError", "ERROR FILE CREATION")
         }
     }
 
@@ -174,19 +176,19 @@ class Config_Bluetooth_Fragment : Fragment() {
         private var connectSuccess: Boolean = true
 
         override fun doInBackground(vararg params: Void?): String? {
-             try {
-                 if (m_bluetoothSocket == null || !m_isConnected){
-                    val device : BluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(configurationModel.bluetoothMac)
-                     //m_bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(m_UUID)
-                     m_bluetoothSocket = device.createRfcommSocketToServiceRecord(m_UUID)
-                     mBluetoothAdapter!!.cancelDiscovery()
-                     m_bluetoothSocket!!.connect()
-                 }
+            try {
+                if (m_bluetoothSocket == null || !m_isConnected) {
+                    val device: BluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(configurationModel.bluetoothMac)
+                    //m_bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(m_UUID)
+                    m_bluetoothSocket = device.createRfcommSocketToServiceRecord(m_UUID)
+                    mBluetoothAdapter!!.cancelDiscovery()
+                    m_bluetoothSocket!!.connect()
+                }
 
-             } catch (e: IOException) {
-                 connectSuccess = false
-                 e.printStackTrace()
-             }
+            } catch (e: IOException) {
+                connectSuccess = false
+                e.printStackTrace()
+            }
 
             return null
         }
@@ -202,13 +204,15 @@ class Config_Bluetooth_Fragment : Fragment() {
     }
 
     inner class Communicate(c: Context) : AsyncTask<Void, Void, String>() {
-        var ovpnProfile : String? = null
-        var context : Context? = null
+        var ovpnProfile: String? = null
+        var context: Context? = null
+
         init {
             this.context = c
         }
+
         override fun doInBackground(vararg params: Void?): String? {
-            var dh  = DiffieHellmann()
+            var dh = DiffieHellmann()
 
             // Generation of private and public keys
             dh.generateKeys()
@@ -234,6 +238,9 @@ class Config_Bluetooth_Fragment : Fragment() {
 
             // We get the OpenVPN profile from the ProtectMe Box(.ovpn file)
             val lengthCipherText = receiveCommand(null)
+            sendCommand("Received")
+            //Sleep 2 second during the box send the entiere ovpn file
+            Thread.sleep(2000)
             val ovpnProfile = receiveCommand(lengthCipherText!!.toInt())
             //val cipherOvpnFile = receiveCommand(lengthCipherText!!.toInt())
             //ovpnProfile = dh.decryptMessage(cipherOvpnFile!!)

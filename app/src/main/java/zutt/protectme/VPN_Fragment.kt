@@ -36,6 +36,7 @@ class VPN_Fragment : Fragment() {
     private val PREFERENCE_CONFIG_NAME = "boxes"
     private var prefs: SharedPreferences? = null
     private var res: ressource? = null
+    private var configurationOK = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,30 +45,39 @@ class VPN_Fragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        res = ressource(prefs!!)
+        val files = FileManager(this.context!!)
+        val filename = files.getDefaultFileName()
+        if (!filename.isNullOrBlank()) {
+            configurationOK = true
+            var configurationName = filename.substringAfter(FileManager.DEFAULT)
+            configurationName = configurationName.substringBefore(FileManager.FILE_EXTENSION)
+            vpn_connectTo.text = configurationName
+        }
         vpnConnect.setOnClickListener { view ->
-            //TODO : See if configuration default exist
-            vpnButtonDefineUI(false)
-            if(connected){
-                try {
-                    vpnService!!.disconnect()
-                    connected = false
-                    vpnButtonDefineUI(false)
-                }
-                catch (e : RemoteException){
-                    e.printStackTrace()
+
+            if (configurationOK) {
+                vpnButtonDefineUI(false)
+                if (connected) {
+                    try {
+                        vpnService!!.disconnect()
+                        connected = false
+                        vpnButtonDefineUI(false)
+                    } catch (e: RemoteException) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    try {
+                        prepareStartProfile(PROFILE_ADD_NEW)
+                        prepareStartProfile(START_PROFILE_EMBEDDED)
+                        connected = true
+                        vpnButtonDefineUI(connected)
+                    } catch (e: RemoteException) {
+                        e.printStackTrace()
+                    }
                 }
             }
             else{
-                try {
-                    prepareStartProfile(PROFILE_ADD_NEW)
-                    prepareStartProfile(START_PROFILE_EMBEDDED)
-                    connected = true
-                    vpnButtonDefineUI(connected)
-                }
-                catch (e : RemoteException){
-                    e.printStackTrace()
-                }
+                Toast.makeText(this.context, "CONFIGURE BEFORE CONNECT", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -93,7 +103,9 @@ class VPN_Fragment : Fragment() {
 
             val files  = FileManager(this.context!!)
             var config = files.readDefaultFile()
-            /*val conf = activity!!.assets.open("test.conf")
+
+            /*
+            val conf = activity!!.assets.open("test.conf")
             val isr = InputStreamReader(conf)
             val br = BufferedReader(isr)
             var config : String = ""
@@ -104,9 +116,9 @@ class VPN_Fragment : Fragment() {
                     break
                 config += line + "\n"
             }
-            br.readLine()*/
-
-            if (addNew)
+            br.readLine()
+            */
+           if (addNew)
                 vpnService!!.addNewVPNProfile("nonEditable", false, config)
             else
                 vpnService!!.startVPN(config)
