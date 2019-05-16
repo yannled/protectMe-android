@@ -16,24 +16,36 @@
         android:textSize="25sp" />
 
     <TextView
+        android:id="@+id/activeBlue_config"
+        android:textColor="#FF0000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:text="@string/connect_Bluetooth_config"
+        android:gravity="center_horizontal"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/activeBox_firstconfig"
+        android:textColor="#000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="140dp"
+        android:text="@string/only_first_config"
+        android:gravity="center_horizontal"
+        android:textSize="20sp" />
+
+    <TextView
         android:id="@+id/activeBox_config"
         android:textColor="#000"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="190dp"
         android:text="@string/active_box_config"
         android:gravity="center_horizontal"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/activeBlue_config"
-        android:textColor="#000"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
-        android:text="@string/connect_Bluetooth_config"
-        android:gravity="center_horizontal"
-        android:textSize="18sp"/>
+
 
     <Button
         android:id="@+id/button_config"
@@ -44,7 +56,30 @@
         android:padding="20dp"
         android:layout_width="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="260dp"
+        android:layout_height="80dp"
+        android:text="@string/wait_config"/>
+
+    <TextView
+        android:id="@+id/activeBox_addPhone"
+        android:textColor="#000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="400dp"
+        android:text="@string/add_Phone_config"
+        android:gravity="center_horizontal"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/button_addPhone"
+        android:textColor="#fff"
+        android:clickable="false"
+        android:textSize="20sp"
+        android:background="@color/disable"
+        android:padding="20dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="480dp"
         android:layout_height="80dp"
         android:text="@string/wait_config"/>
 

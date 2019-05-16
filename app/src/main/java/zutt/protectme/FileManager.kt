@@ -110,6 +110,17 @@ class FileManager(c : Context){
         file.delete()
     }
 
+    fun deleteAllFiles(){
+        if(!directory!!.exists()){
+            return
+        }
+
+        val files = directory!!.listFiles()
+        for (file : File in files){
+            file.delete()
+        }
+    }
+
     fun renameFile(position: Int, fileName: String, KeepDefault : Boolean = true){
         var newFileName = fileName
         if(!directory!!.exists()){

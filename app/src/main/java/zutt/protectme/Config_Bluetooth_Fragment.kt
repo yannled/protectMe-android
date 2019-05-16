@@ -11,14 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.os.AsyncTask
-import android.widget.ProgressBar
 import kotlinx.android.synthetic.main.fragment_bluetooth_config.*
 import java.io.IOException
 import java.util.*
-import android.content.Context.MODE_PRIVATE
 import android.util.Log
-import java.io.OutputStreamWriter
-import java.nio.charset.Charset
 
 
 class Config_Bluetooth_Fragment : Fragment() {
@@ -30,8 +26,6 @@ class Config_Bluetooth_Fragment : Fragment() {
         var m_UUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
         var m_bluetoothSocket: BluetoothSocket? = null
         var m_isConnected: Boolean = false
-        var PREFERENCE_CONFIG_NAME = "boxes"
-        var prefs: SharedPreferences? = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +47,6 @@ class Config_Bluetooth_Fragment : Fragment() {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        prefs = this.activity!!.getSharedPreferences(PREFERENCE_CONFIG_NAME, 0)
         // Start bluetooth discovery
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         mBluetoothAdapter!!.startDiscovery()
@@ -214,6 +207,9 @@ class Config_Bluetooth_Fragment : Fragment() {
         override fun doInBackground(vararg params: Void?): String? {
             var dh = DiffieHellmann()
 
+            //Send the choice action between configure box for the first use or add phone to box
+            sendCommand(configurationModel.action)
+
             // Generation of private and public keys
             dh.generateKeys()
 
@@ -241,9 +237,9 @@ class Config_Bluetooth_Fragment : Fragment() {
             sendCommand("Received")
             //Sleep 2 second during the box send the entiere ovpn file
             Thread.sleep(2000)
-            val ovpnProfile = receiveCommand(lengthCipherText!!.toInt())
-            //val cipherOvpnFile = receiveCommand(lengthCipherText!!.toInt())
-            //ovpnProfile = dh.decryptMessage(cipherOvpnFile!!)
+            //val ovpnProfile = receiveCommand(lengthCipherText!!.toInt())
+            val cipherOvpnFile = receiveCommand(lengthCipherText!!.toInt())
+            ovpnProfile = dh.decryptMessage(cipherOvpnFile!!)
 
             writeVpnProfileToFile(ovpnProfile!!, this.context!!)
 
@@ -254,11 +250,6 @@ class Config_Bluetooth_Fragment : Fragment() {
 
         override fun onPostExecute(result: String?) {
             progressBar.visibility = View.INVISIBLE
-            //var res : ressource = ressource(prefs!!)
-            //res.addProtectMeBoxe(configurationModel.bluetoothMac!!, configurationModel.bluetoothName!!, configurationModel.wifiSsid!!)
-            //var test = res.getProtectMeBoxes()
-            //res.modifyProctectMeBoxe("2testMac", "modifyName", "2testssid", "2testip")
-            //var prout = res.getProtectMeBoxe("2testMac")
         }
     }
 }

@@ -15,16 +15,6 @@ import android.support.v4.content.ContextCompat
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.fragment_wifi_config.*
 
-/**
- * Class Model to share configurations informations for the next configurations fragments
- */
-class SharedViewModel : ViewModel(){
-    var wifiSsid : String? = null
-    var wifiPassword : String? = null
-    var bluetoothName : String? = null
-    var bluetoothMac : String? = null
-}
-
 
 class Config_Wifi_Fragment : Fragment() {
 
