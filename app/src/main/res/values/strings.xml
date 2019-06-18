@@ -44,6 +44,9 @@
     <string name="next_config">Next step</string>
     <string name="wait_config">Complete before</string>
     <string name="no_Bluetooth_config">You can\'t active Bluetooth</string>
+    <string name="no_Location_config">You can\'t access to Location authorizations</string>
+    <string name="enable_LocationTitle">GPS setting!</string>
+    <string name="enable_Location">Please active the GPS, it\'s needed to get SSID informations</string>
 
     <!-- Configuration_wifi view -->
     <string name="hello_Config_wifi">1. Wifi</string>
@@ -57,6 +60,7 @@
     <string name="hello_Bluetooth">2. Bluetooth</string>
     <string name="select_Bluetooth">Wait then clic on Start Configuration</string>
     <string name="wait_Bluetooth_conf">Wait during configuration</string>
+    <string name="informations_Bluetooth">For configuration, we have activated Wifi, Bluetooth and Localisation. If you don\'t need it. Disable them!</string>
 
     <!-- List Box view -->
     <string name="ListBOX">List Box</string>

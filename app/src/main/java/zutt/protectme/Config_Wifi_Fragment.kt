@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.bluetooth.BluetoothClass
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -35,6 +36,8 @@ class Config_Wifi_Fragment : Fragment() {
         val wifiInfo = wifiManager.connectionInfo
         //get SSID and escape the " "
         ssid = wifiInfo.ssid.substring(1, wifiInfo.ssid.length-1)
+        wifiManager.disconnect()
+        val locationManager: LocationManager = this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

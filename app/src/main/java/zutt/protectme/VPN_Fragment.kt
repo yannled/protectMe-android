@@ -67,7 +67,7 @@ class VPN_Fragment : Fragment() {
                     }
                 } else {
                     try {
-                        prepareStartProfile(PROFILE_ADD_NEW)
+                        //prepareStartProfile(PROFILE_ADD_NEW)
                         prepareStartProfile(START_PROFILE_EMBEDDED)
                         connected = true
                         vpnButtonDefineUI(connected)
@@ -102,10 +102,9 @@ class VPN_Fragment : Fragment() {
         try {
 
             val files  = FileManager(this.context!!)
-            var config = files.readDefaultFile()
+            //val config = files.readDefaultFile()
 
-            /*
-            val conf = activity!!.assets.open("test.conf")
+            val conf = activity!!.assets.open("test2.conf")
             val isr = InputStreamReader(conf)
             val br = BufferedReader(isr)
             var config : String = ""
@@ -117,7 +116,7 @@ class VPN_Fragment : Fragment() {
                 config += line + "\n"
             }
             br.readLine()
-            */
+
            if (addNew)
                 vpnService!!.addNewVPNProfile("nonEditable", false, config)
             else

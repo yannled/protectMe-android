@@ -83,6 +83,7 @@ class Config_Bluetooth_Fragment : Fragment() {
                 m_bluetoothSocket!!.close()
                 m_bluetoothSocket = null
                 m_isConnected = false
+                mBluetoothAdapter!!.disable()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -110,26 +111,6 @@ class Config_Bluetooth_Fragment : Fragment() {
             val length = m_bluetoothSocket!!.inputStream.read(buffer)
             val msg = String(buffer, Charsets.UTF_8)
             return msg.substring(0, length)
-            /*
-            var bufferSize = 1024
-
-            if(lengthToRead != null) {
-                var msg = ""
-                while (true){
-                    val buffer: ByteArray = ByteArray(bufferSize)
-                    val length = m_bluetoothSocket!!.inputStream.read(buffer)
-                    msg += String(buffer, Charsets.UTF_8)
-                    if(msg.length >= lengthToRead)
-                        return msg.substring(0,lengthToRead)
-                }
-            }
-            else {
-                val buffer: ByteArray = ByteArray(bufferSize)
-                val length = m_bluetoothSocket!!.inputStream.read(buffer)
-                val msg = String(buffer, Charsets.UTF_8)
-                return msg.substring(0, length)
-            }
-            */
         }
         return null
     }
@@ -250,6 +231,7 @@ class Config_Bluetooth_Fragment : Fragment() {
 
         override fun onPostExecute(result: String?) {
             progressBar.visibility = View.INVISIBLE
+
         }
     }
 }

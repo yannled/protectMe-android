@@ -95,7 +95,6 @@ class DiffieHellmann(){
         val Y : BigInteger = publicKey.y
         val stringKey = "OpenSSLDHPublicKey{Y=" + Y.toString() + ",P=" + p.toString() + ",G=" + g.toString() + "}"
         return stringKey
-
     }
 
     fun setReceivePublicKey(PublicKey: String?){

@@ -54,6 +54,16 @@
             android:layout_marginTop="81dp"
             android:text="@string/select_Bluetooth" />
 
+        <TextView
+            android:id="@+id/textView_bluetooth_Information"
+            android:layout_width="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="151dp"
+            android:text="@string/informations_Bluetooth" />
+
 
     </RelativeLayout>
 </FrameLayout>
