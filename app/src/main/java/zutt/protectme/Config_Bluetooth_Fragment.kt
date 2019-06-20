@@ -1,7 +1,6 @@
 package zutt.protectme
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
 import android.bluetooth.*
 import android.content.*
@@ -15,6 +14,8 @@ import kotlinx.android.synthetic.main.fragment_bluetooth_config.*
 import java.io.IOException
 import java.util.*
 import android.util.Log
+import android.widget.Button
+import android.widget.ProgressBar
 
 
 class Config_Bluetooth_Fragment : Fragment() {
@@ -27,6 +28,8 @@ class Config_Bluetooth_Fragment : Fragment() {
         var m_bluetoothSocket: BluetoothSocket? = null
         var m_isConnected: Boolean = false
     }
+    lateinit var progressBar : ProgressBar
+    lateinit var button_config_Bluetooth : Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -42,6 +45,9 @@ class Config_Bluetooth_Fragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        progressBar = view!!.findViewById(R.id.progressBar)
+        button_config_Bluetooth = view!!.findViewById(R.id.button_config_Bluetooth)
 
         configurationModel = activity?.run {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
@@ -153,8 +159,8 @@ class Config_Bluetooth_Fragment : Fragment() {
             try {
                 if (m_bluetoothSocket == null || !m_isConnected) {
                     val device: BluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(configurationModel.bluetoothMac)
-                    //m_bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(m_UUID)
-                    m_bluetoothSocket = device.createRfcommSocketToServiceRecord(m_UUID)
+                    m_bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(m_UUID)
+                    //m_bluetoothSocket = device.createRfcommSocketToServiceRecord(m_UUID)
                     mBluetoothAdapter!!.cancelDiscovery()
                     m_bluetoothSocket!!.connect()
                 }
@@ -230,8 +236,11 @@ class Config_Bluetooth_Fragment : Fragment() {
         }
 
         override fun onPostExecute(result: String?) {
+            //Change display informations
             progressBar.visibility = View.INVISIBLE
-
+            textView_bluetooth.visibility =  View.INVISIBLE
+            Bluetooth_config_title.text = getString(R.string.title_Bluetooth_conf_Ok)
+            textView_bluetooth_Information.visibility = View.VISIBLE
         }
     }
 }

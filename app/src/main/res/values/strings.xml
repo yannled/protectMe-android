@@ -60,7 +60,10 @@
     <string name="hello_Bluetooth">2. Bluetooth</string>
     <string name="select_Bluetooth">Wait then clic on Start Configuration</string>
     <string name="wait_Bluetooth_conf">Wait during configuration</string>
+
+    <!-- Finish Configuration -->
     <string name="informations_Bluetooth">For configuration, we have activated Wifi, Bluetooth and Localisation. If you don\'t need it. Disable them!</string>
+    <string name="title_Bluetooth_conf_Ok">Configuration terminated</string>
 
     <!-- List Box view -->
     <string name="ListBOX">List Box</string>

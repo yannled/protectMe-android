@@ -33,11 +33,17 @@ class DiffieHellmann(){
         val BLOCK_SIZE = 16 //AES  128
     }
 
-    fun generateIv(): ByteArray {
+    private fun generateIv(): ByteArray {
         val iv = ByteArray(BLOCK_SIZE)
         val random = SecureRandom()
         random.nextBytes(iv)
         return iv
+    }
+
+    private fun shortenSecretKey(longKey : ByteArray) : ByteArray{
+        val shortenedKey = ByteArray(BLOCK_SIZE)
+        System.arraycopy(longKey, 0, shortenedKey, 0, shortenedKey.size)
+        return shortenedKey
     }
 
     fun encryptMessage(message : String) : String{
@@ -66,9 +72,7 @@ class DiffieHellmann(){
         keyAgreement.init(privateKey)
         keyAgreement.doPhase(receivePublicKey,true)
         var tempKey = keyAgreement.generateSecret(cryptoAlgorithm).encoded
-        var test1 = BigInteger(1,tempKey)
         secretKey = shortenSecretKey(tempKey)
-        var test = BigInteger(1,secretKey)
     }
 
     fun generateKeys(){
@@ -114,12 +118,8 @@ class DiffieHellmann(){
         cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec)
 
         // Decrypt and take of the IV
-        return String(cipher.doFinal(cipherText)).substring(BLOCK_SIZE-1)
+        //return String(cipher.doFinal(cipherText)).substring(BLOCK_SIZE-1)
+        return String(cipher.doFinal(cipherText)).substring(BLOCK_SIZE)
     }
 
-    private fun shortenSecretKey(longKey : ByteArray) : ByteArray{
-        val shortenedKey = ByteArray(BLOCK_SIZE)
-        System.arraycopy(longKey, 0, shortenedKey, 0, shortenedKey.size)
-        return shortenedKey
-    }
 }

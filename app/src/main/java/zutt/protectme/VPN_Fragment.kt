@@ -35,7 +35,6 @@ class VPN_Fragment : Fragment() {
     protected var vpnService : IOpenVPNAPIService? = null
     private val PREFERENCE_CONFIG_NAME = "boxes"
     private var prefs: SharedPreferences? = null
-    private var res: ressource? = null
     private var configurationOK = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +59,7 @@ class VPN_Fragment : Fragment() {
                 if (connected) {
                     try {
                         vpnService!!.disconnect()
+                        vpnService!!.removeProfile(mStartUUID)
                         connected = false
                         vpnButtonDefineUI(false)
                     } catch (e: RemoteException) {
@@ -67,7 +67,7 @@ class VPN_Fragment : Fragment() {
                     }
                 } else {
                     try {
-                        //prepareStartProfile(PROFILE_ADD_NEW)
+                        prepareStartProfile(PROFILE_ADD_NEW)
                         prepareStartProfile(START_PROFILE_EMBEDDED)
                         connected = true
                         vpnButtonDefineUI(connected)
@@ -102,23 +102,10 @@ class VPN_Fragment : Fragment() {
         try {
 
             val files  = FileManager(this.context!!)
-            //val config = files.readDefaultFile()
-
-            val conf = activity!!.assets.open("test2.conf")
-            val isr = InputStreamReader(conf)
-            val br = BufferedReader(isr)
-            var config : String = ""
-            var line: String?
-            while (true) {
-                line = br.readLine()
-                if (line == null)
-                    break
-                config += line + "\n"
-            }
-            br.readLine()
-
+            val configName = files.getDefaultFileName()
+            val config = files.readDefaultFile()
            if (addNew)
-                vpnService!!.addNewVPNProfile("nonEditable", false, config)
+                vpnService!!.addNewVPNProfile(configName, false, config)
             else
                 vpnService!!.startVPN(config)
         } catch (e: IOException) {

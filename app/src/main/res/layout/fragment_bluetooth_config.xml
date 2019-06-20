@@ -11,6 +11,7 @@
         android:layout_height="451dp">
 
         <TextView
+            android:id="@+id/Bluetooth_config_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -58,10 +59,12 @@
             android:id="@+id/textView_bluetooth_Information"
             android:layout_width="match_parent"
             android:layout_centerHorizontal="true"
+            android:visibility="invisible"
             android:gravity="center_horizontal"
             android:layout_height="100dp"
             android:layout_alignParentTop="true"
             android:layout_marginTop="151dp"
+            android:textSize="20sp"
             android:text="@string/informations_Bluetooth" />
 
 

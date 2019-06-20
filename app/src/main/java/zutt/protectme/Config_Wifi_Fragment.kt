@@ -32,12 +32,11 @@ class Config_Wifi_Fragment : Fragment() {
         super.onAttach(context)
 
         // Get the SSID of the connected wifi
-        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiManager = context!!.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val wifiInfo = wifiManager.connectionInfo
         //get SSID and escape the " "
         ssid = wifiInfo.ssid.substring(1, wifiInfo.ssid.length-1)
         wifiManager.disconnect()
-        val locationManager: LocationManager = this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -47,49 +46,58 @@ class Config_Wifi_Fragment : Fragment() {
         ConfigurationModel = activity?.run {
             ViewModelProviders.of(this).get(SharedViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
+        ConfigurationModel.wifiSsid = ssid
 
-        ssid_config_wifi.text = ssid
+        // if this is a FirstConfiguration we ask password to the user
+        if(ConfigurationModel.action!!.equals("FirstConfig")) {
+            ssid_config_wifi.text = ssid
 
-        // When user has finish to edit the second password EditText
-        password_wifi2.setOnEditorActionListener() { v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_DONE){
+            // When user has finish to edit the second password EditText
+            password_wifi2.setOnEditorActionListener() { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                //we verify that password are the same
-                val firstPassword = password_wifi1.text
-                val secondPassword = password_wifi2.text
+                    //we verify that password are the same
+                    val firstPassword = password_wifi1.text
+                    val secondPassword = password_wifi2.text
 
-                if(!firstPassword.toString().equals(secondPassword.toString())) {
-                    //error message
-                    password_ok_config_wifi.visibility = View.VISIBLE
-                    password_wifi1.text.clear()
-                    password_wifi2.text.clear()
-                }
-                else{
-                    ConfigurationModel.wifiSsid = ssid
-                    ConfigurationModel.wifiPassword = secondPassword.toString()
+                    if (!firstPassword.toString().equals(secondPassword.toString())) {
+                        //error message
+                        password_ok_config_wifi.visibility = View.VISIBLE
+                        password_wifi1.text.clear()
+                        password_wifi2.text.clear()
+                    } else {
+                        ConfigurationModel.wifiPassword = secondPassword.toString()
 
-                    password_ok_config_wifi.visibility = View.INVISIBLE
+                        password_ok_config_wifi.visibility = View.INVISIBLE
 
-                    //modify button to continue configuration
-                    val color = ContextCompat.getColor(this.context!!,R.color.myBlueDark)
-                    button_config_Wifi.setText(R.string.next_config)
-                    button_config_Wifi.setBackgroundColor(color)
-                    button_config_Wifi.isClickable = true
+                        //modify button to continue configuration
+                        val color = ContextCompat.getColor(this.context!!, R.color.myBlueDark)
+                        button_config_Wifi.setText(R.string.next_config)
+                        button_config_Wifi.setBackgroundColor(color)
+                        button_config_Wifi.isClickable = true
 
-                    //On click, go to the next fragment configuration
-                    button_config_Wifi.setOnClickListener { view ->
-                        val nextFrag = Config_Bluetooth_Fragment()
-                        activity!!.supportFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_container, nextFrag)
-                                .addToBackStack(null)
-                                .commit()
+                        //On click, go to the next fragment configuration
+                        button_config_Wifi.setOnClickListener { view ->
+                            val nextFrag = Config_Bluetooth_Fragment()
+                            activity!!.supportFragmentManager.beginTransaction()
+                                    .replace(R.id.fragment_container, nextFrag)
+                                    .addToBackStack(null)
+                                    .commit()
+                        }
                     }
+                    false
+                } else {
+                    false
                 }
-                false
-            } else {
-                false
             }
         }
-
+        // if this is a Adding Phone profile we pass directly to the next Fragment
+        else{
+            val nextFrag = Config_Bluetooth_Fragment()
+            activity!!.supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, nextFrag)
+                    .addToBackStack(null)
+                    .commit()
+        }
     }
 }
