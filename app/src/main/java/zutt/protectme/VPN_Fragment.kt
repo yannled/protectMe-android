@@ -59,7 +59,8 @@ class VPN_Fragment : Fragment() {
                 if (connected) {
                     try {
                         vpnService!!.disconnect()
-                        vpnService!!.removeProfile(mStartUUID)
+                        if(mStartUUID != null)
+                            vpnService!!.removeProfile(mStartUUID)
                         connected = false
                         vpnButtonDefineUI(false)
                     } catch (e: RemoteException) {
@@ -80,6 +81,13 @@ class VPN_Fragment : Fragment() {
                 Toast.makeText(this.context, "CONFIGURE BEFORE CONNECT", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        vpnService!!.disconnect()
+        if(mStartUUID != null)
+            vpnService!!.removeProfile(mStartUUID)
     }
 
     fun vpnButtonDefineUI(vpnStart : Boolean){
