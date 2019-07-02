@@ -3,8 +3,6 @@ package zutt.protectme
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Bundle
-import android.os.RemoteException
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +11,15 @@ import de.blinkt.openvpn.api.IOpenVPNAPIService
 import java.io.IOException
 import android.content.ComponentName
 import android.app.Activity
-import android.os.IBinder
 import android.content.ServiceConnection
+import android.os.*
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_vpn.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import de.blinkt.openvpn.api.IOpenVPNStatusCallback
+
+
 
 /**
  * Source : https://github.com/schwabe/ics-openvpn/tree/master/remoteExample
@@ -29,7 +30,9 @@ class VPN_Fragment : Fragment() {
     private val START_PROFILE_BYUUID = 3
     private val ICS_OPENVPN_PERMISSION = 7
     private val PROFILE_ADD_NEW = 8
+    private val MSG_UPDATE_STATE = 0
 
+    private var mHandler: Handler? = null
     private var connected : Boolean = false
     private var mStartUUID: String? = null
     protected var vpnService : IOpenVPNAPIService? = null
@@ -80,6 +83,14 @@ class VPN_Fragment : Fragment() {
             else{
                 Toast.makeText(this.context, "CONFIGURE BEFORE CONNECT", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        mHandler = Handler{
+            if(it.obj.toString().contains("CONNECTED") && connected)
+                Toast.makeText(this.context,"Connected", Toast.LENGTH_SHORT).show()
+            if(it.obj.toString().contains("NOPROCESS") && !connected)
+                Toast.makeText(this.context,"Disconnected", Toast.LENGTH_SHORT).show()
+            true
         }
     }
 
@@ -198,6 +209,16 @@ class VPN_Fragment : Fragment() {
         activity!!.bindService(icsopenvpnService, mConnection, Context.BIND_AUTO_CREATE)
     }
 
+    private val mCallback = object : IOpenVPNStatusCallback.Stub() {
+
+        @Throws(RemoteException::class)
+        override fun newStatus(uuid: String, state: String, message: String, level: String) {
+            val msg = Message.obtain(mHandler, MSG_UPDATE_STATE, "$state|$message")
+            msg.sendToTarget()
+        }
+
+    }
+
     private fun unbindService() {
         activity!!.unbindService(mConnection)
     }
@@ -230,6 +251,12 @@ class VPN_Fragment : Fragment() {
                 }
             if (requestCode == ICS_OPENVPN_PERMISSION){
                 listVPNs()
+                try {
+                    vpnService!!.registerStatusCallback(mCallback)
+                } catch (e: RemoteException) {
+                    e.printStackTrace()
+                }
+
             }
             if (requestCode == PROFILE_ADD_NEW) {
                 startEmbeddedProfile(true)
