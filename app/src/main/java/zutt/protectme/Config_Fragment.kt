@@ -84,6 +84,8 @@ class Config_Fragment : Fragment() {
 
         // verify that Location is enable, needed to get Wifi ssid on android 8.1 to 9.
         val locationManager: LocationManager = this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+
         if(!locationManager.isLocationEnabled){
             var alertDialog : AlertDialog.Builder  = AlertDialog.Builder(context)
             alertDialog.setTitle(R.string.enable_LocationTitle)
