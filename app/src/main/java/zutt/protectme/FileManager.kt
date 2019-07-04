@@ -13,16 +13,19 @@ class FileManager(c : Context){
         val DEFAULT = "DEFAULT_"
         val FILE_EXTENSION = ".txt"
         val DIRECTORY_NAME = "ProtectMeConfig"
+        val DIRECTORY_VERSION_NAME = "ProtectMeConfig"
     }
 
     private var context : Context? = null
     private var path : File? = null
     private var directory : File? = null
+    private var directoryVersion : File? = null
 
     init {
         this.context = c
         path = context!!.filesDir
         directory = File(path, DIRECTORY_NAME)
+        directoryVersion = File(path, DIRECTORY_VERSION_NAME)
     }
 
     fun addFile(filename : String, content : String): Boolean {
@@ -63,7 +66,7 @@ class FileManager(c : Context){
             return null
 
         val file = File(directory, filename)
-        var content = FileInputStream(file).bufferedReader().use { it.readText() }
+        val content = FileInputStream(file).bufferedReader().use { it.readText() }
         return content
 
     }
@@ -110,12 +113,23 @@ class FileManager(c : Context){
         file.delete()
     }
 
-    fun deleteAllFiles(){
+    fun deleteAllProfileFiles(){
         if(!directory!!.exists()){
             return
         }
 
         val files = directory!!.listFiles()
+        for (file : File in files){
+            file.delete()
+        }
+    }
+
+    fun deleteVersionFile(){
+        if(!directoryVersion!!.exists()){
+            return
+        }
+
+        val files = directoryVersion!!.listFiles()
         for (file : File in files){
             file.delete()
         }
@@ -162,5 +176,33 @@ class FileManager(c : Context){
         defaultFileName = DEFAULT + defaultFileName
 
         renameFile(position, defaultFileName)
+    }
+
+    fun readFileVersion(filename: String): String {
+        if(!directoryVersion!!.exists()){
+            return "NO_FILES"
+        }
+
+        val files = directoryVersion!!.listFiles()
+        for (file: File in files){
+            if(file.name.equals(filename)){
+                val content = FileInputStream(file).bufferedReader().use { it.readText() }
+                return content
+            }
+        }
+        return "NO_FILES"
+    }
+
+    fun writeFileVersion(filename: String, content: String): Boolean {
+        if(!directoryVersion!!.exists()){
+            directoryVersion!!.mkdirs()
+        }
+
+        var file = File(directoryVersion, filename)
+
+        FileOutputStream(file).use {
+            it.write(content.toByteArray())
+        }
+        return file.exists()
     }
 }

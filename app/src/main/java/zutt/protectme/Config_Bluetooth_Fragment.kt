@@ -113,7 +113,7 @@ class Config_Bluetooth_Fragment : Fragment() {
             if(lengthToRead != null)
                 bufferSize = lengthToRead
 
-            val buffer: ByteArray = ByteArray(bufferSize)
+            val buffer = ByteArray(bufferSize)
             val length = m_bluetoothSocket!!.inputStream.read(buffer)
             val msg = String(buffer, Charsets.UTF_8)
             return msg.substring(0, length)
@@ -160,7 +160,6 @@ class Config_Bluetooth_Fragment : Fragment() {
                 if (m_bluetoothSocket == null || !m_isConnected) {
                     val device: BluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(configurationModel.bluetoothMac)
                     m_bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(m_UUID)
-                    //m_bluetoothSocket = device.createRfcommSocketToServiceRecord(m_UUID)
                     mBluetoothAdapter!!.cancelDiscovery()
                     m_bluetoothSocket!!.connect()
                 }
@@ -214,22 +213,29 @@ class Config_Bluetooth_Fragment : Fragment() {
             // We Generate SecretSharedKey
             dh.generateCommonSecretKey()
 
-            // We send Wifi configurations
-            val plaintext = "{" + configurationModel.wifiSsid + "}{" + configurationModel.wifiPassword + "}"
-            val cypherText = dh.encryptMessage(plaintext)
-            sendCommand(cypherText)
+            var plaintext = ""
+            if(configurationModel.action.equals("Update")){
+                var plaintext = "{" + configurationModel.hash + "}"
+                val cypherText = dh.encryptMessage(plaintext)
+                sendCommand(cypherText)
+            }
+            else {
+                // We send Wifi configurations
+                plaintext = "{" + configurationModel.wifiSsid + "}{" + configurationModel.wifiPassword + "}"
+                val cypherText = dh.encryptMessage(plaintext)
+                sendCommand(cypherText)
 
-            // We get the OpenVPN profile from the ProtectMe Box(.ovpn file)
-            val lengthCipherText = receiveCommand(null)
-            sendCommand("Received")
-            //Sleep 2 second during the box send the entiere ovpn file
-            Thread.sleep(2000)
-            //val ovpnProfile = receiveCommand(lengthCipherText!!.toInt())
-            val cipherOvpnFile = receiveCommand(lengthCipherText!!.toInt())
-            ovpnProfile = dh.decryptMessage(cipherOvpnFile!!)
+                // We get the OpenVPN profile from the ProtectMe Box(.ovpn file)
+                val lengthCipherText = receiveCommand(null)
+                sendCommand("Received")
+                //Sleep 2 second during the box send the entiere ovpn file
+                Thread.sleep(2000)
+                //val ovpnProfile = receiveCommand(lengthCipherText!!.toInt())
+                val cipherOvpnFile = receiveCommand(lengthCipherText!!.toInt())
+                ovpnProfile = dh.decryptMessage(cipherOvpnFile!!)
 
-            writeVpnProfileToFile(ovpnProfile!!, this.context!!)
-
+                writeVpnProfileToFile(ovpnProfile!!, this.context!!)
+            }
             disconnect()
 
             return null

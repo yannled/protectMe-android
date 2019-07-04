@@ -37,6 +37,7 @@ class SharedViewModel : ViewModel(){
     var bluetoothName : String? = null
     var bluetoothMac : String? = null
     var action : String? = null
+    var hash : String? = null
 }
 
 class Config_Fragment : Fragment() {

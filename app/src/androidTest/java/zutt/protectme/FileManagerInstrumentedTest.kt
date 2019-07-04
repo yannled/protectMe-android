@@ -38,13 +38,15 @@ class FileManagerTests {
 
     @After
     fun deleteFiles() {
-        fileManager.deleteAllFiles()
+        fileManager.deleteAllProfileFiles()
+        fileManager.deleteVersionFile()
     }
 
 
     @Test
     fun deleteAllFiles() {
-        fileManager.deleteAllFiles()
+        fileManager.deleteAllProfileFiles()
+        fileManager.deleteVersionFile()
     }
 
     @Test
@@ -64,7 +66,7 @@ class FileManagerTests {
     fun thisTestShouldCreateFile_AddingTheExtension_AddingTheDefault_ThenVerifyThatFileExist() {
         //First we delete all files because if the folder is not empty, the Default inscirption
         // will not be added to the File
-        fileManager.deleteAllFiles()
+        fileManager.deleteAllProfileFiles()
 
         val name = "testAddingDefaultFile"
         val defaultNameAndExtension =FileManager.DEFAULT+name+FileManager.FILE_EXTENSION
@@ -104,7 +106,7 @@ class FileManagerTests {
     fun thisTestShouldCreateFile_AddingTheExtension_AddingTheDefault_ThenGetTheDefaultFileName_ThenVerifyTheDefaultFileContent() {
         //First we delete all files because if the folder is not empty, the Default inscirption
         // will not be added to the File
-        fileManager.deleteAllFiles()
+        fileManager.deleteAllProfileFiles()
 
         //verify that we could get the default file
         val name = "testGetDefaultFile"
@@ -148,7 +150,7 @@ class FileManagerTests {
     fun thisTestShouldCreateFile_AddingTheExtension_AddingTheDefault_RenameItKeepDefault_ThenVerifyThatFileExist() {
         //First we delete all files because if the folder is not empty, the Default inscirption
         // will not be added to the File
-        fileManager.deleteAllFiles()
+        fileManager.deleteAllProfileFiles()
 
         val name = "testRenameDefaultFile"
         val defaultNameAndExtension =FileManager.DEFAULT+name+FileManager.FILE_EXTENSION
@@ -173,7 +175,7 @@ class FileManagerTests {
     fun thisTestShouldCreateTwoFiles_OneDefault_OneNormal_ThenChangeDefaultFile_ThenVerifyThatFileExist() {
         //First we delete all files because if the folder is not empty, the Default inscirption
         // will not be added to the File
-        fileManager.deleteAllFiles()
+        fileManager.deleteAllProfileFiles()
 
         val namef1 = "testDefaultFile"
         val defaultNameAndExtensionf1 =FileManager.DEFAULT+namef1+FileManager.FILE_EXTENSION

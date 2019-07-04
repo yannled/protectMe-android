@@ -125,7 +125,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 openFragment(configFragment)
             }
             R.id.nav_update -> {
-
+                val updateFragement = Update_Fragment()
+                openFragment(updateFragement)
             }
             R.id.nav_list -> {
                 val listBoxFragment = ListBox_Fragment()

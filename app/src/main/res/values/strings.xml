@@ -70,4 +70,14 @@
     <string name="ManageBox">rename, delete or make default your box</string>
     <string name="renameBox">Type new name</string>
     <string name="ButtonRename">Rename</string>
+
+    <!-- Update view -->
+    <string name="Hello_update">Updates</string>
+    <string name="nothing">No protectMe! Server update available, check on Play Store if new Android Update available</string>
+    <string name="something">New ProtectMe! update available, be sure to have internet access</string>
+    <string name="apply_update">apply new update</string>
+    <string name="currentVersionLabel">Current Version</string>
+    <string name="currentVersion">--No_information--</string>
+    <string name="hashRecovered">hash recovered</string>
+    <string name="UpdateNameRecovered">update name recovered</string>
 </resources>

@@ -91,7 +91,7 @@ class Config_Wifi_Fragment : Fragment() {
                 }
             }
         }
-        // if this is a Adding Phone profile we pass directly to the next Fragment
+        // if this is a Adding Phone profile or update ProtectMe! we pass directly to the next Fragment
         else{
             val nextFrag = Config_Bluetooth_Fragment()
             activity!!.supportFragmentManager.beginTransaction()
