@@ -4,7 +4,7 @@
  * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
  * Projet : ProtectMe! VPN for everyone !
  * Github : https://github.com/yannled/protectMe-android
- * sources : ---
+ * sources : https://android--code.blogspot.com/2018/02/android-kotlin-popup-window-example.html
  *
  * Type de classe : Activity
  * Vue correspondantes : ---

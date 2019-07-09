@@ -29,8 +29,6 @@ import android.content.ServiceConnection
 import android.os.*
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_vpn.*
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import de.blinkt.openvpn.api.IOpenVPNStatusCallback
 
 class VPN_Fragment : Fragment() {

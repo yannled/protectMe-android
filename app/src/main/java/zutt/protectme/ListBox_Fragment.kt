@@ -17,11 +17,8 @@ package zutt.protectme
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.transition.TransitionManager
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -29,19 +26,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import kotlinx.android.synthetic.main.fragment_listbox.*
-import android.support.v4.content.ContextCompat.getSystemService
-import android.text.style.BackgroundColorSpan
 import android.transition.Slide
-import android.util.Log
 import android.view.Gravity
-import kotlinx.android.synthetic.main.listview_row.*
 
 
 class ListBox_Fragment : Fragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

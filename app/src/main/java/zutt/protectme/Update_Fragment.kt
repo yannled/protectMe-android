@@ -15,39 +15,25 @@
 
 package zutt.protectme
 
-import android.annotation.SuppressLint
+
 import android.app.Activity
-import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.support.annotation.RequiresApi
-import android.support.transition.TransitionManager
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import kotlinx.android.synthetic.main.fragment_listbox.*
-import android.support.v4.content.ContextCompat.getSystemService
-import android.text.style.BackgroundColorSpan
-import android.transition.Slide
 import android.util.Base64
-import android.util.Log
 import android.view.Gravity
-import kotlinx.android.synthetic.main.fragment_config.*
 import kotlinx.android.synthetic.main.fragment_update.*
-import kotlinx.android.synthetic.main.listview_row.*
 import org.json.JSONArray
 import org.json.JSONObject
-import zutt.protectme.Config_Bluetooth_Fragment.Companion.mBluetoothAdapter
 import java.net.URL
 import java.nio.charset.Charset
 
@@ -59,10 +45,6 @@ class Update_Fragment : Fragment() {
     private var enableBtIntent = Intent()
     private var mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     private lateinit var ConfigurationModel: SharedViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

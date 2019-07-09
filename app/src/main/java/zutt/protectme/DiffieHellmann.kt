@@ -19,7 +19,6 @@ import java.math.BigInteger
 import java.security.*
 import java.security.SecureRandom
 import android.util.Base64
-import java.security.spec.PKCS8EncodedKeySpec
 import javax.crypto.Cipher
 import javax.crypto.KeyAgreement
 import javax.crypto.interfaces.DHPrivateKey

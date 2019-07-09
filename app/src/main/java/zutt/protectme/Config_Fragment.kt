@@ -63,11 +63,6 @@ class Config_Fragment : Fragment() {
     private var mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
     private lateinit var ConfigurationModel: SharedViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-
     //create personalised Toast
     fun Toast.createToast(context: Context, message: String, gravity: Int, duration: Int) {
         val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
