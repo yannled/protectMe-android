@@ -1,3 +1,18 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : ---
+ *
+ * Type de classe : Fragment
+ * Vue correspondantes : fragment_listbox
+ * Explication : Ce fragment permet à l'utilisateur de visualiser les différents profiles openvpn
+ * récupérés à partir du boiter ProtectME! ainsi que les renommer, supprimer ou passer en profile par
+ * défaut. le profile par défaut sera le profile utilisé lors de la connexion VPN
+ */
+
 package zutt.protectme
 
 import android.annotation.SuppressLint

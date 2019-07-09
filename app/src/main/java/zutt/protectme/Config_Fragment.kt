@@ -1,3 +1,21 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : ---
+ *
+ * Type de classe : Fragment
+ * Vue correspondantes : fragment_config.xml
+ * Explication : ce fragment correspond au premier appelé lors de la configuration du boitier
+ * ProtectMe! ou lors de la récupération d'un profile openVPN. Ensuite est appelé le fragment
+ * suivant (Config_Wifi_Fragment)
+ *
+ * Permissions demandees : Acces Wifi, lancement du Wifi, Acces Bluetooth, Acces Localisation
+ * (si nécessaire si version >= Android 9)
+ */
+
 package zutt.protectme
 
 import android.Manifest
@@ -25,8 +43,6 @@ import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.widget.*
 import kotlinx.android.synthetic.main.fragment_config.*
-
-
 
 /**
  * Class Model to share configurations informations for the next configurations fragments

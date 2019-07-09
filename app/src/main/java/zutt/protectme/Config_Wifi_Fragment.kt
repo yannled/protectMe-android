@@ -1,3 +1,17 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : ---
+ *
+ * Type de classe : Fragment
+ * Vue correspondantes : fragment_wifi_config.xml
+ * Explication : ce fragment permet de récupérer le SSID du wifi actuellement connecté ainsi que le
+ * mot de passe correspondant afin de passer au fragment suivant (Config_Bluetooth_Fragment)
+ */
+
 package zutt.protectme
 
 import android.arch.lifecycle.ViewModel

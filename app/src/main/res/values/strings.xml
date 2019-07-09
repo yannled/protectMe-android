@@ -80,4 +80,5 @@
     <string name="currentVersion">--No_information--</string>
     <string name="hashRecovered">hash recovered</string>
     <string name="UpdateNameRecovered">update name recovered</string>
+    <string name="updateInfo">This update will take long time !</string>
 </resources>

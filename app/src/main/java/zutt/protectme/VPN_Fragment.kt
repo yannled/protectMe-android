@@ -1,3 +1,17 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : https://github.com/schwabe/ics-openvpn/tree/master/remoteExample
+ *
+ * Type de classe : Fragment
+ * Vue correspondantes : fragment_vpn
+ * Explication : Ce fragment utilise l'IDL API du projet ics-openVPN et l'application "OpenVPN for Android"
+ * pour ouvrir une connexion VPN en utilisant le profile précédement chargé.
+ */
+
 package zutt.protectme
 
 import android.content.Context
@@ -19,11 +33,6 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import de.blinkt.openvpn.api.IOpenVPNStatusCallback
 
-
-
-/**
- * Source : https://github.com/schwabe/ics-openvpn/tree/master/remoteExample
- */
 class VPN_Fragment : Fragment() {
 
     private val START_PROFILE_EMBEDDED = 2

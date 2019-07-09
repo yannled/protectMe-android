@@ -1,3 +1,17 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : ---
+ *
+ * Type de classe : Fragment
+ * Vue correspondantes : fragment_bluetooth_config.xml
+ * Explication : ce fragment gère la connexion et les communications Bluetooth
+ * avec le serveur ProtectMe!
+ */
+
 package zutt.protectme
 
 import android.annotation.SuppressLint
@@ -28,8 +42,9 @@ class Config_Bluetooth_Fragment : Fragment() {
         var m_bluetoothSocket: BluetoothSocket? = null
         var m_isConnected: Boolean = false
     }
-    lateinit var progressBar : ProgressBar
-    lateinit var button_config_Bluetooth : Button
+
+    lateinit var progressBar: ProgressBar
+    lateinit var button_config_Bluetooth: Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -110,7 +125,7 @@ class Config_Bluetooth_Fragment : Fragment() {
         if (m_bluetoothSocket != null) {
             var bufferSize = 1024
 
-            if(lengthToRead != null)
+            if (lengthToRead != null)
                 bufferSize = lengthToRead
 
             val buffer = ByteArray(bufferSize)
@@ -214,12 +229,11 @@ class Config_Bluetooth_Fragment : Fragment() {
             dh.generateCommonSecretKey()
 
             var plaintext = ""
-            if(configurationModel.action.equals("Update")){
+            if (configurationModel.action.equals("Update")) {
                 var plaintext = "{" + configurationModel.hash + "}"
                 val cypherText = dh.encryptMessage(plaintext)
                 sendCommand(cypherText)
-            }
-            else {
+            } else {
                 // We send Wifi configurations
                 plaintext = "{" + configurationModel.wifiSsid + "}{" + configurationModel.wifiPassword + "}"
                 val cypherText = dh.encryptMessage(plaintext)
@@ -244,7 +258,7 @@ class Config_Bluetooth_Fragment : Fragment() {
         override fun onPostExecute(result: String?) {
             //Change display informations
             progressBar.visibility = View.INVISIBLE
-            textView_bluetooth.visibility =  View.INVISIBLE
+            textView_bluetooth.visibility = View.INVISIBLE
             Bluetooth_config_title.text = getString(R.string.title_Bluetooth_conf_Ok)
             textView_bluetooth_Information.visibility = View.VISIBLE
         }

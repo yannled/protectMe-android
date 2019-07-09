@@ -1,12 +1,24 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : ---
+ *
+ * Type de classe : Classe simple
+ * Vue correspondantes : ---
+ * Explication : Cette classe permet de gérer les différents fichier openvpn inscrit sur le smartphone
+ * le nom des fichiers suit le format suivant : DEFAULT_<WifiSSID>_<boxName>_<boxMac>
+ * DEFAULT_ est ajouté seulement dans le cas ou c'est le premier profile ajouté au smartphone ou que
+ * l'utilisateur à changé le profile par défaut. C'est ce profile qui sera utilisé lors de la connexion VPN
+ */
+
 package zutt.protectme
 
 import android.content.Context
 import java.io.*
 
-/*
-Format Filename : DEFAULT_<WifiSSID>_<boxName>_<boxMac>
-DEFAULT is ad only if first file or if user has change default configuration.
- */
 class FileManager(c : Context){
 
     companion object {
@@ -40,6 +52,7 @@ class FileManager(c : Context){
             file = File(directory, DEFAULT + filename + FILE_EXTENSION)
         }
         else{
+            deleteFileIfExist_ByFileName(filename+FILE_EXTENSION)
             file = File(directory, filename+FILE_EXTENSION)
         }
 
@@ -111,6 +124,18 @@ class FileManager(c : Context){
         val files = directory!!.listFiles()
         var file = files.get(position)
         file.delete()
+    }
+
+    fun deleteFileIfExist_ByFileName(filenameAndExtension : String){
+        if(!directory!!.exists()){
+            return
+        }
+
+        val files = directory!!.listFiles()
+        for (file: File in files){
+            if (file.name == filenameAndExtension)
+                file.delete()
+        }
     }
 
     fun deleteAllProfileFiles(){

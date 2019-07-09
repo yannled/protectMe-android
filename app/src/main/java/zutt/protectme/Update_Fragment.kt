@@ -1,3 +1,18 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : ---
+ *
+ * Type de classe : Fragment
+ * Vue correspondantes : fragment_update
+ * Explication : Ce fragment permet à l'utilisateur de savoir si lors de la dernière mise à jour de
+ * son application smartphone, une nouvelle version du serveur est alors disponible. Si c'est le cas,
+ * l'utilisateur peut initer la mise à jour du boitier.
+ */
+
 package zutt.protectme
 
 import android.annotation.SuppressLint
@@ -90,6 +105,7 @@ class Update_Fragment : Fragment() {
             val color = ContextCompat.getColor(this.context!!, R.color.myBlueDark)
             update_applyUpdate.setBackgroundColor(color)
             update_available.text = getText(R.string.something)
+            update_info.visibility = View.VISIBLE
 
             update_applyUpdate.setOnClickListener { view ->
                 // verify that Bluetooth is enable, if not, ask to active it
@@ -128,7 +144,7 @@ class Update_Fragment : Fragment() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         //Do a Call on the Github API to know hash of new version
-        var result = URL("https://api.github.com/repos/yannled/protectMe_Update/contents/hash.txt").readText()
+        var result = URL("https://api.github.com/repos/yannled/protectMe-Update/contents/hash.txt").readText()
         var resultJson = JSONObject(result)
         val encodedHash = resultJson.getString("content")
         val decodedBytes = Base64.decode(encodedHash, Base64.DEFAULT)
@@ -139,7 +155,7 @@ class Update_Fragment : Fragment() {
 
         //Do a Call on the GIthub API to know the name of new version
         var nameUpdateFile = ""
-        result = URL("https://api.github.com/repos/yannled/protectMe_Update/contents/").readText()
+        result = URL("https://api.github.com/repos/yannled/protectMe-Update/contents/").readText()
         var resultJsonArray = JSONArray(result)
         var jsonObject: JSONObject
         for (i in 0 until resultJsonArray.length()) {

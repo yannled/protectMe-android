@@ -1,3 +1,18 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : https://github.com/firatkucuk/diffie-hellman-helloworld
+ *
+ * Type de classe : Classe simple
+ * Vue correspondantes : ---
+ * Explication : Cette classe permet de faire les manipulation cryptographiques nécéssaire à l'ouverture
+ * d'un canal Diffie Hellman. Permet donc la récupération d'un clé de chiffrement commune ainsi que
+ * le chiffrement et le déchiffrement de messages.
+ */
+
 package zutt.protectme
 
 import java.math.BigInteger
@@ -10,11 +25,6 @@ import javax.crypto.KeyAgreement
 import javax.crypto.interfaces.DHPrivateKey
 import javax.crypto.interfaces.DHPublicKey
 import javax.crypto.spec.*
-
-
-/*
-Source : https://github.com/firatkucuk/diffie-hellman-helloworld
- */
 
 class DiffieHellmann(){
 

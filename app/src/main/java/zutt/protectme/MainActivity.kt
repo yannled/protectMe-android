@@ -1,3 +1,17 @@
+/**
+ * Auteur: Yann Lederrey
+ * Date : 19 Juillet 2019
+ * Cadre : Travail de Bachelor, Heig-VD, Securite de l'information
+ * Projet : ProtectMe! VPN for everyone !
+ * Github : https://github.com/yannled/protectMe-android
+ * sources : ---
+ *
+ * Type de classe : Activity
+ * Vue correspondantes : ---
+ * Explication : L'activité principale nous permet de définir les fragments chargé par les boutons de
+ * menu ainsi que l'icone d'information. Par défaut le fragment VPN est chargé.
+ */
+
 package zutt.protectme
 
 import android.content.Context
