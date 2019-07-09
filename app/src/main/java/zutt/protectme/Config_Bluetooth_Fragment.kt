@@ -241,6 +241,10 @@ class Config_Bluetooth_Fragment : Fragment() {
 
                 // We get the OpenVPN profile from the ProtectMe Box(.ovpn file)
                 val lengthCipherText = receiveCommand(null)
+                if("error" in lengthCipherText!!) {
+                    disconnect()
+                    return "an error has occurred"
+                }
                 sendCommand("Received")
                 //Sleep 2 second during the box send the entiere ovpn file
                 Thread.sleep(2000)
@@ -259,7 +263,12 @@ class Config_Bluetooth_Fragment : Fragment() {
             //Change display informations
             progressBar.visibility = View.INVISIBLE
             textView_bluetooth.visibility = View.INVISIBLE
-            Bluetooth_config_title.text = getString(R.string.title_Bluetooth_conf_Ok)
+            if(!result.isNullOrEmpty()){
+                Bluetooth_config_title.text = result
+            }
+            else {
+                Bluetooth_config_title.text = getString(R.string.title_Bluetooth_conf_Ok)
+            }
             textView_bluetooth_Information.visibility = View.VISIBLE
         }
     }
