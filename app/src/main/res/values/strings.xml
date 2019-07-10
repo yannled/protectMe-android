@@ -23,9 +23,10 @@
     <string name="title_information">How to use ProtectMe!</string>
     <string name="list_information"><b><big></big></b>
         \n <li>start your ProtectMe! Box</li>
-        \n <li>connect to your ProtectMe! By Bluetooth</li>
-        \n <li>go to configure tab</li>
-        \n <li>begin to use your secured connection</li>
+        \n <li>connect to your ProtectMe! By Bluetooth with configuration tab</li>
+        \n <li>follow the instructions</li>
+        \n <li>begin to use your secured connection with VPN tab</li>                                                                   
+        \n <li>manage your vpn profiles with List tab</li>
         \n <li>don\'t forget to update your box by the update tab</li>
     </string>
     <string name="close_button_information">Close Me!</string>
