@@ -3,23 +3,21 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">ProtectMe!</string>
-    <string name="nav_header_subtitle">VPN for everyone</string>
+    <string name="nav_header_subtitle">VPN for everyone !</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="navigation_VPN">VPN</string>
     <string name="navigation_Configuration">Box Configuration</string>
-    <string name="navigation_Add_Box">Add VPN</string>
     <string name="navigation_Update">Update</string>
     <string name="navigation_List">List</string>
 
     <!-- Main view -->
     <string name="hello_VPN">Click on connect to be secure !</string>
-    <string name="hello_blank_fragment_config">Hello blank fragment for config</string>
     <string name="VPN_connect">CONNECT !</string>
     <string name="VPN_connectStart">Start VPN!</string>
     <string name="VPN_connectStop">Stop VPN!</string>
     <string name="ConnectTO">Connected to : </string>
-    <string name="ConnectTONothing">No configurations !</string>
+    <string name="ConnectTONothing">No configuration !</string>
 
     <!-- view_information -->
     <string name="title_information">How to use ProtectMe!</string>
@@ -36,11 +34,11 @@
     <string name="hello_Config">Configuration</string>
     <string name="active_box_config">First, start the ProtectMe! box then click on "First configuration"</string>
     <string name="only_first_config">If this is the first configuration.</string>
-    <string name="add_Phone_config">If this is for add a phone to your ProtectMe Box clic on "Adding phone".</string>
-    <string name="connect_Bluetooth_config">Be sure to have Bluetooth and wifi active</string>
+    <string name="add_Phone_config">If this is to get an VPN access to your Box</string>
+    <string name="connect_Bluetooth_config">Be sure to have Bluetooth and wifi activate</string>
     <string name="start_config">Start configuration</string>
     <string name="begin_config">First configuration</string>
-    <string name="begin_addPhone">Adding phone</string>
+    <string name="begin_addPhone">Get VPN access</string>
     <string name="next_config">Next step</string>
     <string name="wait_config">Complete before</string>
     <string name="no_Bluetooth_config">You can\'t active Bluetooth</string>
@@ -52,13 +50,13 @@
     <string name="hello_Config_wifi">1. Wifi</string>
     <string name="label_ssid_Config_wifi">your wifi : </string>
     <string name="ssid_Config_wifi">waiting information</string>
-    <string name="password_Config_wifi">type the wifi password</string>
-    <string name="second_password_Config_wifi">type password a second time</string>
-    <string name="error_password_Config_wifi">Passwords are different</string>
+    <string name="password_Config_wifi">write wifi password</string>
+    <string name="second_password_Config_wifi">write password a second time</string>
+    <string name="error_password_Config_wifi">Passwords are differents</string>
 
     <!-- Configuration_Bluetooth view -->
     <string name="hello_Bluetooth">2. Bluetooth</string>
-    <string name="select_Bluetooth">Wait then clic on Start Configuration</string>
+    <string name="select_Bluetooth">Wait, then clic on Start Configuration</string>
     <string name="wait_Bluetooth_conf">Wait during configuration</string>
 
     <!-- Finish Configuration -->
@@ -68,7 +66,7 @@
     <!-- List Box view -->
     <string name="ListBOX">List Box</string>
     <string name="ManageBox">rename, delete or make default your box</string>
-    <string name="renameBox">Type new name</string>
+    <string name="renameBox">write new name</string>
     <string name="ButtonRename">Rename</string>
 
     <!-- Update view -->
@@ -80,5 +78,5 @@
     <string name="currentVersion">--No_information--</string>
     <string name="hashRecovered">hash recovered</string>
     <string name="UpdateNameRecovered">update name recovered</string>
-    <string name="updateInfo">This update will take long time !</string>
+    <string name="updateInfo">This update will take long time be patient!</string>
 </resources>
