@@ -102,7 +102,7 @@ class Update_Fragment : Fragment() {
                 }
 
                 // if bluetooth is already enable, start updating
-                if(mBluetoothAdapter!=null && mBluetoothAdapter.isEnabled){
+                if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled) {
                     startUpdating()
                 }
             }
@@ -143,9 +143,10 @@ class Update_Fragment : Fragment() {
         for (i in 0 until resultJsonArray.length()) {
             jsonObject = resultJsonArray.getJSONObject(i)
             if (".img" in jsonObject.getString("name")) {
-                nameUpdateFile = jsonObject.getString("name")
+                nameUpdateFile = jsonObject.getString("name").substringBefore(".gz")
                 toast = Toast(context)
                 toast.createToast(context!!, getString(R.string.UpdateNameRecovered), Gravity.BOTTOM, 10)
+                break
             }
         }
 

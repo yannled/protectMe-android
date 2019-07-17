@@ -19,19 +19,19 @@ package zutt.protectme
 import android.content.Context
 import java.io.*
 
-class FileManager(c : Context){
+class FileManager(c: Context) {
 
     companion object {
         val DEFAULT = "DEFAULT_"
         val FILE_EXTENSION = ".txt"
         val DIRECTORY_NAME = "ProtectMeConfig"
-        val DIRECTORY_VERSION_NAME = "ProtectMeConfig"
+        val DIRECTORY_VERSION_NAME = "ProtectMeUpdate"
     }
 
-    private var context : Context? = null
-    private var path : File? = null
-    private var directory : File? = null
-    private var directoryVersion : File? = null
+    private var context: Context? = null
+    private var path: File? = null
+    private var directory: File? = null
+    private var directoryVersion: File? = null
 
     init {
         this.context = c
@@ -40,20 +40,19 @@ class FileManager(c : Context){
         directoryVersion = File(path, DIRECTORY_VERSION_NAME)
     }
 
-    fun addFile(filename : String, content : String): Boolean {
-        if(!directory!!.exists()){
+    fun addFile(filename: String, content: String): Boolean {
+        if (!directory!!.exists()) {
             directory!!.mkdirs()
         }
 
-        var file : File? = null
+        var file: File? = null
 
         // this is the first file configuration, Default configuration
-        if(directory!!.listFiles().isEmpty()){
+        if (directory!!.listFiles().isEmpty()) {
             file = File(directory, DEFAULT + filename + FILE_EXTENSION)
-        }
-        else{
-            deleteFileIfExist_ByFileName(filename+FILE_EXTENSION)
-            file = File(directory, filename+FILE_EXTENSION)
+        } else {
+            deleteFileIfExist_ByFileName(filename + FILE_EXTENSION)
+            file = File(directory, filename + FILE_EXTENSION)
         }
 
         FileOutputStream(file).use {
@@ -63,19 +62,19 @@ class FileManager(c : Context){
     }
 
     fun readDefaultFile(): String? {
-        if(!directory!!.exists()){
+        if (!directory!!.exists()) {
             return null
         }
 
-        var filename : String? = null
+        var filename: String? = null
         val files = directory!!.listFiles()
-        for (file : File in files){
-            if(file.name.contains(DEFAULT)){
+        for (file: File in files) {
+            if (file.name.contains(DEFAULT)) {
                 filename = file.name
             }
         }
 
-        if(filename.isNullOrBlank())
+        if (filename.isNullOrBlank())
             return null
 
         val file = File(directory, filename)
@@ -85,19 +84,19 @@ class FileManager(c : Context){
     }
 
     fun getDefaultFileName(): String? {
-        if(!directory!!.exists()){
+        if (!directory!!.exists()) {
             return null
         }
 
-        var filename : String? = null
+        var filename: String? = null
         val files = directory!!.listFiles()
-        for (file : File in files){
-            if(file.name.contains(DEFAULT)){
+        for (file: File in files) {
+            if (file.name.contains(DEFAULT)) {
                 filename = file.name
             }
         }
 
-        if(filename.isNullOrBlank())
+        if (filename.isNullOrBlank())
             return null
 
         return filename
@@ -105,84 +104,82 @@ class FileManager(c : Context){
 
     fun getFileNames(): ArrayList<String> {
         val list: ArrayList<String> = arrayListOf()
-        if(!directory!!.exists()){
+        if (!directory!!.exists()) {
             return list
         }
 
         val files = directory!!.listFiles()
-        for (file : File in files){
-                list.add(file.name)
+        for (file: File in files) {
+            list.add(file.name)
         }
         return list
     }
 
-    fun deleteFile(position : Int){
-        if(!directory!!.exists()){
+    fun deleteFile(position: Int) {
+        if (!directory!!.exists()) {
             return
         }
 
         val files = directory!!.listFiles()
-        var file = files.get(position)
+        val file = files.get(position)
         file.delete()
     }
 
-    fun deleteFileIfExist_ByFileName(filenameAndExtension : String){
-        if(!directory!!.exists()){
+    fun deleteFileIfExist_ByFileName(filenameAndExtension: String) {
+        if (!directory!!.exists()) {
             return
         }
 
         val files = directory!!.listFiles()
-        for (file: File in files){
+        for (file: File in files) {
             if (file.name == filenameAndExtension)
                 file.delete()
         }
     }
 
-    fun deleteAllProfileFiles(){
-        if(!directory!!.exists()){
+    fun deleteAllProfileFiles() {
+        if (!directory!!.exists()) {
             return
         }
 
         val files = directory!!.listFiles()
-        for (file : File in files){
+        for (file: File in files) {
             file.delete()
         }
     }
 
-    fun deleteVersionFile(){
-        if(!directoryVersion!!.exists()){
+    fun deleteVersionFile() {
+        if (!directoryVersion!!.exists()) {
             return
         }
 
         val files = directoryVersion!!.listFiles()
-        for (file : File in files){
+        for (file: File in files) {
             file.delete()
         }
     }
 
-    fun renameFile(position: Int, fileName: String, KeepDefault : Boolean = true){
+    fun renameFile(position: Int, fileName: String, KeepDefault: Boolean = true) {
         var newFileName = fileName
-        if(!directory!!.exists()){
+        if (!directory!!.exists()) {
             return
         }
 
         val files = directory!!.listFiles()
         val old = files.get(position)
-        if(old.name.contains(DEFAULT) && KeepDefault)
-        {
+        if (old.name.contains(DEFAULT) && KeepDefault) {
             newFileName = DEFAULT + newFileName
         }
-        if(!fileName.contains(FILE_EXTENSION))
-        {
+        if (!fileName.contains(FILE_EXTENSION)) {
             newFileName = newFileName + FILE_EXTENSION
         }
         val new = File(directory, newFileName)
-        if(old.exists())
+        if (old.exists())
             old.renameTo(new)
     }
 
-    fun changeDefault(position: Int, defaultPosition : Int){
-        if(!directory!!.exists()){
+    fun changeDefault(position: Int, defaultPosition: Int) {
+        if (!directory!!.exists()) {
             return
         }
 
@@ -204,13 +201,13 @@ class FileManager(c : Context){
     }
 
     fun readFileVersion(filename: String): String {
-        if(!directoryVersion!!.exists()){
+        if (!directoryVersion!!.exists()) {
             return "NO_FILES"
         }
 
         val files = directoryVersion!!.listFiles()
-        for (file: File in files){
-            if(file.name.equals(filename)){
+        for (file: File in files) {
+            if (file.name.equals(filename)) {
                 val content = FileInputStream(file).bufferedReader().use { it.readText() }
                 return content
             }
@@ -219,11 +216,11 @@ class FileManager(c : Context){
     }
 
     fun writeFileVersion(filename: String, content: String): Boolean {
-        if(!directoryVersion!!.exists()){
+        if (!directoryVersion!!.exists()) {
             directoryVersion!!.mkdirs()
         }
 
-        var file = File(directoryVersion, filename)
+        val file = File(directoryVersion, filename)
 
         FileOutputStream(file).use {
             it.write(content.toByteArray())

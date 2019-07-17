@@ -230,7 +230,7 @@ class Config_Bluetooth_Fragment : Fragment() {
 
             var plaintext = ""
             if (configurationModel.action.equals("Update")) {
-                var plaintext = "{" + configurationModel.hash + "}"
+                val plaintext = "{" + configurationModel.hash + "}"
                 val cypherText = dh.encryptMessage(plaintext)
                 sendCommand(cypherText)
             } else {
@@ -241,7 +241,7 @@ class Config_Bluetooth_Fragment : Fragment() {
 
                 // We get the OpenVPN profile from the ProtectMe Box(.ovpn file)
                 val lengthCipherText = receiveCommand(null)
-                if("error" in lengthCipherText!!) {
+                if ("error" in lengthCipherText!!) {
                     disconnect()
                     return "an error has occurred"
                 }
@@ -263,10 +263,9 @@ class Config_Bluetooth_Fragment : Fragment() {
             //Change display informations
             progressBar.visibility = View.INVISIBLE
             textView_bluetooth.visibility = View.INVISIBLE
-            if(!result.isNullOrEmpty()){
+            if (!result.isNullOrEmpty()) {
                 Bluetooth_config_title.text = result
-            }
-            else {
+            } else {
                 Bluetooth_config_title.text = getString(R.string.title_Bluetooth_conf_Ok)
             }
             textView_bluetooth_Information.visibility = View.VISIBLE

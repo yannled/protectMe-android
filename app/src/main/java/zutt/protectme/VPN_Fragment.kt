@@ -40,9 +40,9 @@ class VPN_Fragment : Fragment() {
     private val MSG_UPDATE_STATE = 0
 
     private var mHandler: Handler? = null
-    private var connected : Boolean = false
+    private var connected: Boolean = false
     private var mStartUUID: String? = null
-    protected var vpnService : IOpenVPNAPIService? = null
+    protected var vpnService: IOpenVPNAPIService? = null
     private val PREFERENCE_CONFIG_NAME = "boxes"
     private var prefs: SharedPreferences? = null
     private var configurationOK = false
@@ -69,7 +69,7 @@ class VPN_Fragment : Fragment() {
                 if (connected) {
                     try {
                         vpnService!!.disconnect()
-                        if(mStartUUID != null)
+                        if (mStartUUID != null)
                             vpnService!!.removeProfile(mStartUUID)
                         connected = false
                         vpnButtonDefineUI(false)
@@ -86,17 +86,16 @@ class VPN_Fragment : Fragment() {
                         e.printStackTrace()
                     }
                 }
-            }
-            else{
+            } else {
                 Toast.makeText(this.context, "CONFIGURE BEFORE CONNECT", Toast.LENGTH_SHORT).show()
             }
         }
 
-        mHandler = Handler{
-            if(it.obj.toString().contains("CONNECTED") && connected)
-                Toast.makeText(this.context,"Connected", Toast.LENGTH_SHORT).show()
-            if(it.obj.toString().contains("NOPROCESS") && !connected)
-                Toast.makeText(this.context,"Disconnected", Toast.LENGTH_SHORT).show()
+        mHandler = Handler {
+            if (it.obj.toString().contains("CONNECTED") && connected)
+                Toast.makeText(this.context, "Connected", Toast.LENGTH_SHORT).show()
+            if (it.obj.toString().contains("NOPROCESS") && !connected)
+                Toast.makeText(this.context, "Disconnected", Toast.LENGTH_SHORT).show()
             true
         }
     }
@@ -104,16 +103,15 @@ class VPN_Fragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         vpnService!!.disconnect()
-        if(mStartUUID != null)
+        if (mStartUUID != null)
             vpnService!!.removeProfile(mStartUUID)
     }
 
-    fun vpnButtonDefineUI(vpnStart : Boolean){
-        if(vpnStart){
+    fun vpnButtonDefineUI(vpnStart: Boolean) {
+        if (vpnStart) {
             vpnConnect.setBackgroundResource(R.drawable.circlebuttonred)
             vpnConnect.setText(R.string.VPN_connectStop)
-        }
-        else{
+        } else {
             vpnConnect.setBackgroundResource(R.drawable.circlebuttongreen)
             vpnConnect.setText(R.string.VPN_connectStart)
         }
@@ -127,10 +125,10 @@ class VPN_Fragment : Fragment() {
     private fun startEmbeddedProfile(addNew: Boolean) {
         try {
 
-            val files  = FileManager(this.context!!)
+            val files = FileManager(this.context!!)
             val configName = files.getDefaultFileName()
             val config = files.readDefaultFile()
-           if (addNew)
+            if (addNew)
                 vpnService!!.addNewVPNProfile(configName, false, config)
             else
                 vpnService!!.startVPN(config)
@@ -164,7 +162,7 @@ class VPN_Fragment : Fragment() {
             }
 
         } catch (e: RemoteException) {
-           e.printStackTrace()
+            e.printStackTrace()
         }
 
     }
@@ -256,7 +254,7 @@ class VPN_Fragment : Fragment() {
                 } catch (e: RemoteException) {
                     e.printStackTrace()
                 }
-            if (requestCode == ICS_OPENVPN_PERMISSION){
+            if (requestCode == ICS_OPENVPN_PERMISSION) {
                 listVPNs()
                 try {
                     vpnService!!.registerStatusCallback(mCallback)

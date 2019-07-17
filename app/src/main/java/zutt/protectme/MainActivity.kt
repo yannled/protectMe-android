@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val inflater: LayoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
             // Inflate a custom view using layout inflater
-            val view = inflater.inflate(R.layout.view_information,null)
+            val view = inflater.inflate(R.layout.view_information, null)
 
             // Initialize a new instance of popup window
             val popupWindow = PopupWindow(
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             // If API level 23 or higher then execute the code
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Create a new slide animation for popup window enter transition
                 val slideIn = Slide()
                 slideIn.slideEdge = Gravity.TOP
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val buttonPopup = view.findViewById<Button>(R.id.button_popup)
 
             // Set a click listener for popup's button widget
-            buttonPopup.setOnClickListener{
+            buttonPopup.setOnClickListener {
                 // Dismiss the popup window
                 popupWindow.dismiss()
             }

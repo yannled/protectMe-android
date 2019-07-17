@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_wifi_config.*
 
 class Config_Wifi_Fragment : Fragment() {
 
-    private var ssid : String? = null
+    private var ssid: String? = null
     private lateinit var ConfigurationModel: SharedViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -42,10 +42,10 @@ class Config_Wifi_Fragment : Fragment() {
         super.onAttach(context)
 
         // Get the SSID of the connected wifi
-        val wifiManager = context!!.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val wifiInfo = wifiManager.connectionInfo
         //get SSID and escape the " "
-        ssid = wifiInfo.ssid.substring(1, wifiInfo.ssid.length-1)
+        ssid = wifiInfo.ssid.substring(1, wifiInfo.ssid.length - 1)
         wifiManager.disconnect()
     }
 
@@ -59,11 +59,11 @@ class Config_Wifi_Fragment : Fragment() {
         ConfigurationModel.wifiSsid = ssid
 
         // if this is a FirstConfiguration we ask password to the user
-        if(ConfigurationModel.action!!.equals("FirstConfig")) {
+        if (ConfigurationModel.action!!.equals("FirstConfig")) {
             ssid_config_wifi.text = ssid
 
             // When user has finish to edit the second password EditText
-            password_wifi2.setOnEditorActionListener() { v, actionId, event ->
+            password_wifi2.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                     //we verify that password are the same
@@ -102,7 +102,7 @@ class Config_Wifi_Fragment : Fragment() {
             }
         }
         // if this is a Adding Phone profile or update ProtectMe! we pass directly to the next Fragment
-        else{
+        else {
             val nextFrag = Config_Bluetooth_Fragment()
             activity!!.supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, nextFrag)

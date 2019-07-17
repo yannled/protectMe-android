@@ -43,11 +43,11 @@ class ListBox_Fragment : Fragment() {
         val files = FileManager(this.context!!)
 
         val temp = files.getFileNames()
-        val listVpnConfig : ArrayList<String> = arrayListOf()
+        val listVpnConfig: ArrayList<String> = arrayListOf()
 
         var counter = 0
         var positionOfDefault = 0
-        for(filename :String in temp) {
+        for (filename: String in temp) {
             var finalFilename = filename
 
             if (filename.contains(FileManager.DEFAULT)) {
@@ -56,15 +56,15 @@ class ListBox_Fragment : Fragment() {
             }
             finalFilename = finalFilename.substringBefore(FileManager.FILE_EXTENSION)
             listVpnConfig.add(finalFilename)
-            counter ++
+            counter++
         }
 
-        val adapter = boxListAdapter(listVpnConfig,positionOfDefault,this.context!!)
+        val adapter = boxListAdapter(listVpnConfig, positionOfDefault, this.context!!)
         boxList.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
-    fun refreshFragment(){
+    fun refreshFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             fragmentManager!!.beginTransaction().detach(this).commitNow();
             fragmentManager!!.beginTransaction().attach(this).commitNow();
@@ -73,10 +73,10 @@ class ListBox_Fragment : Fragment() {
         }
     }
 
-    inner class boxListAdapter(list : ArrayList<String>, positionSelected : Int, context : Context) : BaseAdapter() {
+    inner class boxListAdapter(list: ArrayList<String>, positionSelected: Int, context: Context) : BaseAdapter() {
         private var listBox: ArrayList<String>? = null
-        private var mContext : Context? = null
-        private var positionSelected : Int = 0
+        private var mContext: Context? = null
+        private var positionSelected: Int = 0
 
         init {
             listBox = list
@@ -102,12 +102,12 @@ class ListBox_Fragment : Fragment() {
             val inflater = mContext!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             var view = inflater.inflate(R.layout.listview_row, parent, false)
 
-            val listview_row : TextView = view.findViewById(R.id.listview_row_text)
-            val btndelete : ImageButton = view.findViewById(R.id.btnDelete)
-            val btnrename : ImageButton = view.findViewById(R.id.btnRename)
-            val btndefault : ImageButton = view.findViewById(R.id.btnDefault)
+            val listview_row: TextView = view.findViewById(R.id.listview_row_text)
+            val btndelete: ImageButton = view.findViewById(R.id.btnDelete)
+            val btnrename: ImageButton = view.findViewById(R.id.btnRename)
+            val btndefault: ImageButton = view.findViewById(R.id.btnDefault)
 
-            if(position == positionSelected){
+            if (position == positionSelected) {
                 view.setBackgroundResource(R.color.myBlue)
                 listview_row.setTextColor(resources.getColor(R.color.white))
             }
@@ -130,7 +130,7 @@ class ListBox_Fragment : Fragment() {
                 val inflater: LayoutInflater = activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
                 // Inflate a custom view using layout inflater
-                val view = inflater.inflate(R.layout.view_rename_box,null)
+                val view = inflater.inflate(R.layout.view_rename_box, null)
 
                 // Initialize a new instance of popup window
                 val popupWindow = PopupWindow(
@@ -148,7 +148,7 @@ class ListBox_Fragment : Fragment() {
                 }
 
                 // If API level 23 or higher then execute the code
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     // Create a new slide animation for popup window enter transition
                     val slideIn = Slide()
                     slideIn.slideEdge = Gravity.TOP
@@ -168,7 +168,7 @@ class ListBox_Fragment : Fragment() {
                 val renameEditText = view.findViewById<EditText>(R.id.renametext)
                 renameEditText.setText(listBox!![position])
                 // Set a click listener for popup's button widget
-                buttonPopup.setOnClickListener{
+                buttonPopup.setOnClickListener {
                     // Rename then Dismiss the popup window
                     files.renameFile(position, renameEditText.text.toString())
                     popupWindow.dismiss()

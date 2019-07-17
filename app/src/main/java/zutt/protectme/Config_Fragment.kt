@@ -47,13 +47,13 @@ import kotlinx.android.synthetic.main.fragment_config.*
 /**
  * Class Model to share configurations informations for the next configurations fragments
  */
-class SharedViewModel : ViewModel(){
-    var wifiSsid : String? = null
-    var wifiPassword : String? = null
-    var bluetoothName : String? = null
-    var bluetoothMac : String? = null
-    var action : String? = null
-    var hash : String? = null
+class SharedViewModel : ViewModel() {
+    var wifiSsid: String? = null
+    var wifiPassword: String? = null
+    var bluetoothName: String? = null
+    var bluetoothMac: String? = null
+    var action: String? = null
+    var hash: String? = null
 }
 
 class Config_Fragment : Fragment() {
@@ -88,33 +88,33 @@ class Config_Fragment : Fragment() {
 
         // verify that location authorization are enable, if not active it
         // needed to get the ssid of the wifi with Oreo 8.1 android
-        if (ContextCompat.checkSelfPermission(context,Manifest.permission.ACCESS_FINE_LOCATION)
-        != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             val permissions = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
-            ActivityCompat.requestPermissions(this.activity!!, permissions,REQUEST_LOCATION)
+            ActivityCompat.requestPermissions(this.activity!!, permissions, REQUEST_LOCATION)
         }
 
         // verify that Location is enable, needed to get Wifi ssid on android 8.1 to 9.
         val locationManager: LocationManager = this.context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
 
-        if(!locationManager.isLocationEnabled){
-            var alertDialog : AlertDialog.Builder  = AlertDialog.Builder(context)
+        if (!locationManager.isLocationEnabled) {
+            var alertDialog: AlertDialog.Builder = AlertDialog.Builder(context)
             alertDialog.setTitle(R.string.enable_LocationTitle)
             alertDialog.setMessage(R.string.enable_Location)
-            alertDialog.setPositiveButton("Setting",DialogInterface.OnClickListener { dialog, which ->
+            alertDialog.setPositiveButton("Setting") { dialog, which ->
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 context.startActivity(intent)
-            })
-            alertDialog.setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, which ->
+            }
+            alertDialog.setNegativeButton("Cancel") { dialog, which ->
                 dialog.cancel()
-            })
+            }
             alertDialog.show()
         }
 
         // verify that wifi is enable, if not active it
         val wifiManager: WifiManager = this.context?.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        if(!wifiManager.isWifiEnabled){
+        if (!wifiManager.isWifiEnabled) {
             wifiManager.isWifiEnabled = true
         }
 
@@ -122,9 +122,8 @@ class Config_Fragment : Fragment() {
         if (mBluetoothAdapter == null) {
             val toast: Toast = Toast(context)
             toast.createToast(context, getString(R.string.no_Bluetooth_config), Gravity.BOTTOM, 10)
-        }
-        else {
-            if(!mBluetoothAdapter.isEnabled) {
+        } else {
+            if (!mBluetoothAdapter.isEnabled) {
                 this.enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 startActivityForResult(this.enableBtIntent, this.REQUEST_ENABLE_BT)
             }
@@ -140,10 +139,10 @@ class Config_Fragment : Fragment() {
                 startConfig()
             }
         }
-        if (requestCode == this.REQUEST_LOCATION){
+        if (requestCode == this.REQUEST_LOCATION) {
             // Make sur the request was successful
-            if(resultCode != Activity.RESULT_OK){
-                val toast: Toast = Toast(context)
+            if (resultCode != Activity.RESULT_OK) {
+                val toast = Toast(context)
                 toast.createToast(this.context!!, getString(R.string.no_Location_config), Gravity.BOTTOM, 10)
             }
         }
@@ -158,14 +157,14 @@ class Config_Fragment : Fragment() {
         } ?: throw Exception("Invalid Activity")
 
         // if bluetooth is already enable, start configuration
-        if(mBluetoothAdapter!=null && mBluetoothAdapter.isEnabled){
+        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled) {
             startConfig()
         }
     }
 
-    fun startConfig(){
+    fun startConfig() {
         //modify button to continue configuration
-        val color = ContextCompat.getColor(this.context!!,R.color.myBlueDark)
+        val color = ContextCompat.getColor(this.context!!, R.color.myBlueDark)
         button_config.setText(R.string.begin_config)
         button_config.setBackgroundColor(color)
         button_config.isClickable = true
