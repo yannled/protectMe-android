@@ -159,23 +159,23 @@ class FileManager(c: Context) {
         }
     }
 
-    fun renameFile(position: Int, fileName: String, KeepDefault: Boolean = true) {
+    fun renameFile(fileToRename:File, fileName: String, KeepDefault: Boolean = true) {
         var newFileName = fileName
         if (!directory!!.exists()) {
             return
         }
 
         val files = directory!!.listFiles()
-        val old = files.get(position)
-        if (old.name.contains(DEFAULT) && KeepDefault) {
+
+        if (fileToRename.name.contains(DEFAULT) && KeepDefault) {
             newFileName = DEFAULT + newFileName
         }
         if (!fileName.contains(FILE_EXTENSION)) {
             newFileName = newFileName + FILE_EXTENSION
         }
         val new = File(directory, newFileName)
-        if (old.exists())
-            old.renameTo(new)
+        if (fileToRename.exists())
+            fileToRename.renameTo(new)
     }
 
     fun changeDefault(position: Int, defaultPosition: Int) {
@@ -184,20 +184,21 @@ class FileManager(c: Context) {
         }
 
         val files = directory!!.listFiles()
+        val oldDefault = files.get(defaultPosition)
+        val newDefault = files.get(position)
 
         // Rename old default file to normal name (without DEFAULT_)
-        val oldDefault = files.get(defaultPosition)
         var defaultFileName = oldDefault.name
         defaultFileName = defaultFileName.substringAfter(DEFAULT)
 
-        renameFile(defaultPosition, defaultFileName, false)
+        renameFile(oldDefault, defaultFileName, false)
 
         // Rename new default file with DEFAULT_
-        val newDefault = files.get(position)
+
         defaultFileName = newDefault.name
         defaultFileName = DEFAULT + defaultFileName
 
-        renameFile(position, defaultFileName)
+        renameFile(newDefault, defaultFileName)
     }
 
     fun readFileVersion(filename: String): String {
@@ -226,5 +227,15 @@ class FileManager(c: Context) {
             it.write(content.toByteArray())
         }
         return file.exists()
+    }
+
+    fun getFile(position : Int) : File? {
+        if (!directory!!.exists()) {
+            return null
+        }
+
+        val files = directory!!.listFiles()
+
+        return files.get(position)
     }
 }

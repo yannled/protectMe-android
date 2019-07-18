@@ -46,7 +46,7 @@ class FileManagerTests {
     @Test
     fun deleteAllFiles() {
         fileManager.deleteAllProfileFiles()
-        fileManager.deleteVersionFile()
+        //fileManager.deleteVersionFile()
     }
 
     @Test
@@ -136,7 +136,8 @@ class FileManagerTests {
             var position = filenames.indexOf(nameAndExtension)
             if(position == -1)
                 position = filenames.indexOf(defaultNameAndExtension)
-            fileManager.renameFile(position,newName,false)
+            val file = fileManager.getFile(position)
+            fileManager.renameFile(file!!,newName,false)
             //Then we get the fileNames a second time
             filenames = fileManager.getFileNames()
             exist = filenames.contains(newName+FileManager.FILE_EXTENSION)
@@ -162,7 +163,8 @@ class FileManagerTests {
         //If the file is created we rename it
         if(exist){
             val position = filenames.indexOf(defaultNameAndExtension)
-            fileManager.renameFile(position,newName,true)
+            val file = fileManager.getFile(position)
+            fileManager.renameFile(file!!,newName,true)
             //Then we get the fileNames a second time
             val filename = fileManager.getDefaultFileName()
             assertTrue(filename.equals(FileManager.DEFAULT+newName+FileManager.FILE_EXTENSION))

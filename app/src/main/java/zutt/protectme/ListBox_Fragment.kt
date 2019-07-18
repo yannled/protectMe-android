@@ -170,7 +170,8 @@ class ListBox_Fragment : Fragment() {
                 // Set a click listener for popup's button widget
                 buttonPopup.setOnClickListener {
                     // Rename then Dismiss the popup window
-                    files.renameFile(position, renameEditText.text.toString())
+                    val fileToRename = files.getFile(position)
+                    files.renameFile(fileToRename!!, renameEditText.text.toString())
                     popupWindow.dismiss()
                     refreshFragment()
                 }
